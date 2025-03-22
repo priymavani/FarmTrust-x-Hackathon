@@ -1,9 +1,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-const chat = model.startChat();
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const cloudinary = require('cloudinary').v2;
@@ -14,7 +11,6 @@ const User = require('./models/user');
 dotenv.config();
 
 const app = express();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const PORT = 5000;
 
 mongoose

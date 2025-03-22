@@ -12,14 +12,13 @@ const SingleProduct = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showFssaiIframe, setShowFssaiIframe] = useState(false);
-  const [showOrganicIframe, setShowOrganicIframe] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [cartError, setCartError] = useState(null);
   const [cartSuccess, setCartSuccess] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(false); // New state for order confirmation
-  const [orderError, setOrderError] = useState(null); // New state for order errors
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderError, setOrderError] = useState(null);
+  const [showCertificatePopup, setShowCertificatePopup] = useState(null); // New state for certificate popup
 
   const { productId } = useParams();
 
@@ -79,8 +78,18 @@ const SingleProduct = () => {
 
   const closePopup = () => {
     setShowPopup(false);
-    setOrderSuccess(false); // Reset order success on close
-    setOrderError(null); // Reset order error on close
+    setOrderSuccess(false);
+    setOrderError(null);
+    document.body.style.overflow = 'auto';
+  };
+
+  const openCertificatePopup = (type) => {
+    setShowCertificatePopup(type);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeCertificatePopup = () => {
+    setShowCertificatePopup(null);
     document.body.style.overflow = 'auto';
   };
 
@@ -103,7 +112,6 @@ const SingleProduct = () => {
     return calculateSubtotal() + deliveryCharge;
   };
 
-  // Add to Cart with schema-compliant keys
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       setCartError('Please log in to add items to your cart.');
@@ -138,7 +146,6 @@ const SingleProduct = () => {
     }
   };
 
-  // Confirm Order with schema-compliant keys
   const handleConfirmOrder = async () => {
     if (!isAuthenticated) {
       setOrderError('Please log in to place an order.');
@@ -151,20 +158,20 @@ const SingleProduct = () => {
       const userId = userResponse.user._id;
 
       const orderItem = {
-        farmerId: product.farmer.email, // Use farmer.email as farmerId
+        farmerId: product.farmer.email,
         products: [{
           productId: product.id,
           name: product.name,
           quantityInKg: quantity,
           pricePerKg: product.mrpPerKg,
-          totalPrice: calculateSubtotal(), // Price for this product
+          totalPrice: calculateSubtotal(),
         }],
-        totalAmount: calculateTotal(), // Subtotal + delivery charge
-        status: 'pending', // Default status
+        totalAmount: calculateTotal(),
+        status: 'pending',
       };
 
       const updatedData = {
-        orders: [orderItem], // Send as array (not stringified)
+        orders: [orderItem],
       };
 
       await updateUser(userId, updatedData, token);
@@ -173,7 +180,7 @@ const SingleProduct = () => {
       setTimeout(() => {
         setOrderSuccess(false);
         closePopup();
-      }, 3000); // Close popup after success message
+      }, 3000);
     } catch (err) {
       setOrderError('Failed to place order. Please try again.');
       setOrderSuccess(false);
@@ -190,7 +197,6 @@ const SingleProduct = () => {
           <div className="p-main-image">
             <img src={mainImage} alt={product.name} />
           </div>
-
           <div className="p-thumbnail-images">
             {productImages.map((image, index) => (
               <div
@@ -209,7 +215,6 @@ const SingleProduct = () => {
           <p className="p-product-description">
             {product.description || 'No description available.'}
           </p>
-
           <div className="p-product-price">
             <span>₹{product.mrpPerKg}/kg</span>
           </div>
@@ -244,7 +249,7 @@ const SingleProduct = () => {
             {product.farmer.certificates.fssai && (
               <button
                 className="p-view-certificate"
-                onClick={() => setShowFssaiIframe(!showFssaiIframe)}
+                onClick={() => openCertificatePopup('fssai')}
               >
                 FSSAI Certificate
               </button>
@@ -252,7 +257,7 @@ const SingleProduct = () => {
             {product.farmer.certificates.organicFarm && (
               <button
                 className="p-view-certificate"
-                onClick={() => setShowOrganicIframe(!showOrganicIframe)}
+                onClick={() => openCertificatePopup('organic')}
               >
                 Organic Certificate
               </button>
@@ -268,35 +273,6 @@ const SingleProduct = () => {
           {cartError && <p className="p-error-message">{cartError}</p>}
         </div>
       </div>
-
-      {(showFssaiIframe || showOrganicIframe) && (
-        <div className="p-certificates-section">
-          {showFssaiIframe && product.farmer.certificates.fssai && (
-            <div className="p-certificate-iframe">
-              <button onClick={() => setShowFssaiIframe(false)}>Close</button>
-              <h3>FSSAI Certificate</h3>
-              <iframe
-                src={`${product.farmer.certificates.fssai}#view=FitH&toolbar=0&navpanes=0`}
-                title="FSSAI Certificate"
-                width="100%"
-                height="500px"
-              />
-            </div>
-          )}
-          {showOrganicIframe && product.farmer.certificates.organicFarm && (
-            <div className="p-certificate-iframe">
-              <button onClick={() => setShowOrganicIframe(false)}>Close</button>
-              <h3>Organic Certificate</h3>
-              <iframe
-                src={`${product.farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
-                title="Organic Certificate"
-                width="100%"
-                height="500px"
-              />
-            </div>
-          )}
-        </div>
-      )}
 
       <div className="p-related-products-section">
         <h2>Related Products</h2>
@@ -327,7 +303,6 @@ const SingleProduct = () => {
           <textarea placeholder="Share your experience..."></textarea>
           <button className="p-submit-review">Submit Review</button>
         </div>
-
         <div className="p-review">
           <div className="p-reviewer-info">
             <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Reviewer" />
@@ -359,7 +334,6 @@ const SingleProduct = () => {
                   <p className="popup-product-price">₹{product.mrpPerKg}/kg</p>
                 </div>
               </div>
-
               <div className="quantity-selector">
                 <h4>Select Quantity (kg)</h4>
                 <div className="quantity-controls">
@@ -372,7 +346,6 @@ const SingleProduct = () => {
                   </button>
                 </div>
               </div>
-
               <div className="price-breakdown">
                 <div className="price-row">
                   <span>Price:</span>
@@ -387,13 +360,35 @@ const SingleProduct = () => {
                   <span>₹{calculateTotal().toFixed(2)}</span>
                 </div>
               </div>
-
               {orderSuccess && <p className="p-success-message">Order placed successfully!</p>}
               {orderError && <p className="p-error-message">{orderError}</p>}
             </div>
             <div className="popup-footer">
               <button className="cancel-btn" onClick={closePopup}>Cancel</button>
               <button className="confirm-btn" onClick={handleConfirmOrder}>Confirm Order</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCertificatePopup && (
+        <div className="certificate-popup-overlay">
+          <div className="certificate-popup-container">
+            <div className="certificate-popup-header">
+              <h3>
+                {showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
+              </h3>
+              <button className="close-certificate-popup" onClick={closeCertificatePopup}>
+                <FaTimes />
+              </button>
+            </div>
+            <div className="certificate-popup-content">
+              <iframe
+                src={`${showCertificatePopup === 'fssai' ? product.farmer.certificates.fssai : product.farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
+                title={showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
+                width="100%"
+                height="100%"
+              />
             </div>
           </div>
         </div>

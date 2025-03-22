@@ -1,5 +1,3 @@
-/* SingleProduct.css */
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -201,6 +199,7 @@ h1 {
 .p-certificate-buttons {
   display: flex;
   gap: 20px;
+  margin-bottom: 20px;
 }
 
 .p-view-certificate:hover {
@@ -271,6 +270,16 @@ h1 {
 
 .p-add-to-cart-btn:hover {
   background-color: #f0f8f4;
+}
+
+.p-success-message {
+  color: #1aa05b;
+  margin-top: 10px;
+}
+
+.p-error-message {
+  color: #f44336;
+  margin-top: 10px;
 }
 
 /* Related Products */
@@ -426,113 +435,7 @@ textarea {
   color: #555;
 }
 
-/* Responsive Styles */
-@media (max-width: 900px) {
-  .p-product-container {
-    flex-direction: column;
-  }
-
-  .p-main-image {
-    height: 300px;
-  }
-
-  .p-seller-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .p-seller-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-
-@media (max-width: 600px) {
-  .p-related-products {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .p-related-product {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .p-action-buttons {
-    flex-direction: column;
-  }
-}
-
-.p-certificate-iframe {
-  margin-top: 20px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  background: #fff;
-}
-
-.p-certificate-iframe button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  background: #f44336;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.p-certificate-iframe button:hover {
-  background: #d32f2f;
-}
-
-@media (max-width: 900px) {
-  .p-seller-info {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px;
-  }
-
-  .p-seller-profile {
-    margin-bottom: 15px;
-  }
-
-  .p-seller-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .p-certificate-buttons {
-    width: 100%;
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 600px) {
-  .p-related-products {
-    grid-template-columns: 1fr 1fr;
-    /* 2 columns on small screens */
-    gap: 10px;
-  }
-
-  .p-related-product-image {
-    height: 100px;
-  }
-
-  .p-related-product h3 {
-    font-size: 13px;
-  }
-
-  .p-related-price {
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 400px) {
-  .p-related-products {
-    grid-template-columns: 1fr;
-    /* 1 column on very small screens */
-  }
-}
-
+/* Buy Now Popup Styles */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -721,7 +624,138 @@ textarea {
   background-color: #008c44;
 }
 
-/* Responsive adjustments */
+/* Certificate Popup Styles */
+.certificate-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200001; /* Higher than buy now popup */
+}
+
+.certificate-popup-container {
+  background-color: white;
+  width: 90%;
+  max-width: 800px; /* Wider for better PDF readability */
+  height: 80vh; /* Fixed height for consistency */
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease;
+}
+
+.certificate-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.certificate-popup-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.close-certificate-popup {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-certificate-popup:hover {
+  color: #ff4d4f;
+}
+
+.certificate-popup-content {
+  flex: 1;
+  padding: 10px;
+}
+
+.certificate-popup-content iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* Animation for popup */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .p-product-container {
+    flex-direction: column;
+  }
+
+  .p-main-image {
+    height: 300px;
+  }
+
+  .p-seller-info {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .p-seller-profile {
+    margin-bottom: 15px;
+  }
+
+  .p-seller-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .p-certificate-buttons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .p-related-products {
+    grid-template-columns: 1fr 1fr; /* 2 columns on small screens */
+    gap: 10px;
+  }
+
+  .p-related-product-image {
+    height: 100px;
+  }
+
+  .p-related-product h3 {
+    font-size: 13px;
+  }
+
+  .p-related-price {
+    font-size: 13px;
+  }
+
+  .p-action-buttons {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 500px) {
   .popup-container {
     width: 95%;
@@ -732,5 +766,25 @@ textarea {
   .popup-product-image {
     width: 60px;
     height: 60px;
+  }
+
+  .certificate-popup-container {
+    width: 95%;
+    height: 70vh;
+  }
+}
+
+@media (max-width: 400px) {
+  .p-related-products {
+    grid-template-columns: 1fr; /* 1 column on very small screens */
+  }
+
+  .certificate-popup-container {
+    width: 98%;
+    height: 60vh;
+  }
+
+  .certificate-popup-header h3 {
+    font-size: 16px;
   }
 }

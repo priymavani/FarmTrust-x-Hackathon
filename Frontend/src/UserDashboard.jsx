@@ -10,9 +10,11 @@ import UserOrders from './components/UserOrders/UserOrders';
 import UserCart from './components/UserCart/UserCart';
 // import UserChat from './UserChat/UserChat';
 import { IoMdChatbubbles } from "react-icons/io";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const UserDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { logout } = useAuth0();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,6 +31,13 @@ const UserDashboard = () => {
 
   const isActive = (path) => {
     return location.pathname.includes(path) ? 'active' : '';
+  };
+
+  const handleLogout = () => {
+    logout({ returnTo: window.location.origin });
+    sessionStorage.removeItem('email');
+    sessionStorage.removeItem('role');
+    setUserRole(null);
   };
 
   return (
@@ -68,7 +77,7 @@ const UserDashboard = () => {
           >
             <IoMdChatbubbles className="icon" /> Messages
           </li>
-          <li>
+          <li onClick={handleLogout}>
             <IoLogOutSharp className="icon" /> Logout
           </li>
         </ul>

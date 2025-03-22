@@ -1,0 +1,151 @@
+/* Navbar General Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10000;
+  }
+  
+  /* Logo Styles */
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+    font-size: 20px; /* Adjusted to match the image */
+    font-weight: bold;
+    color: #1a8e5f; /* Green color from the image */
+  }
+  
+  .logo-icon {
+    margin-right: 5px;
+    font-size: 20px; /* Adjusted to match the image */
+    color: #1a8e5f; /* Match the logo text color */
+  }
+  
+  /* Search Bar Styles */
+  .navbar-search {
+    position: relative;
+    width: 200px; /* Adjusted to match the image */
+    height: 36px; /* Adjusted to match the image */
+    background-color: #f5f5f5; /* Light gray background */
+    border-radius: 4%; /* Circular shape */
+    border: 1px solid #e0e0e0; /* Subtle gray border */
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+  
+  .navbar-search input {
+    width: 100%;
+    padding: 0 10px;
+    border: none; /* Remove default border */
+    background: transparent; /* Transparent background for input */
+    outline: none;
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .navbar-search input::placeholder {
+    color: #888;
+  }
+  
+  .search-icon {
+    color: #888;
+    font-size: 14px; /* Adjusted to match the image */
+  }
+  
+  /* Icons Styles */
+  .navbar-icons {
+    display: flex;
+    gap: 30px; /* Adjusted to match the spacing in the image */
+    align-items: center;
+  }
+  
+  .icon-wrapper {
+    position: relative;
+    font-size: 18px; /* Adjusted to match the image */
+    color: #000; /* Changed to black to match the image */
+  }
+  
+  .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4d4f;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 5px;
+    font-size: 10px; /* Adjusted to match the image */
+  }
+  
+  /* Sign In Button Styles */
+  .sign-in-btn {
+    background-color: #1a8e5f;
+    color: #fff;
+    border: none;
+    padding: 6px 12px; /* Adjusted to match the image */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Adjusted to match the image */
+  }
+  
+  .sign-in-btn:hover {
+    background-color: #156f4a;
+  }
+  
+  /* Hamburger Menu (Hidden by Default) */
+  .hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Navbar Items (Flex for Desktop) */
+  .navbar-items {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Adjusted to match the spacing in the image */
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    /* Show Hamburger Menu on Mobile */
+    .hamburger {
+      display: block;
+    }
+  
+    /* Hide Navbar Items by Default on Mobile */
+    .navbar-items {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+  
+    /* Show Navbar Items When Drawer is Open */
+    .navbar-items.open {
+      display: flex;
+    }
+  
+    /* Adjust Search Bar for Mobile */
+    .navbar-search {
+      margin: 0;
+      width: 100%; /* Full width on mobile */
+      border-radius: 20px; /* Slightly less circular on mobile for better fit */
+    }
+  
+    /* Adjust Icons for Mobile */
+    .navbar-icons {
+      gap: 20px;
+    }
+  }

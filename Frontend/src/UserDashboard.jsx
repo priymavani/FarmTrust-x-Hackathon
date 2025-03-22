@@ -6,8 +6,8 @@ import { FaBars } from 'react-icons/fa';
 import profilePic from '../src/assets/priya-singh.jpg'
 import UserProfile from '../src/components/UserProfile/UserProfile';
 import './UserDashboard.css';
-// import UserOrders from './UserOrders/UserOrders';
-// import UserCart from './UserCart/UserCart';
+import UserOrders from './components/UserOrders/UserOrders';
+import UserCart from './components/UserCart/UserCart';
 // import UserChat from './UserChat/UserChat';
 import { IoMdChatbubbles } from "react-icons/io";
 
@@ -79,9 +79,9 @@ const UserDashboard = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/user/profile" replace />} />
           <Route path="/profile" element={<UserProfile />} />
-          {/* <Route path="/orders" element={<UserOrders />} />
+          <Route path="/orders" element={<UserOrders />} />
           <Route path="/cart" element={<UserCart />} />
-          <Route path="/messages" element={<UserChat />} /> */}
+          {/* <Route path="/messages" element={<UserChat />} /> */}
         </Routes>
       </div>
     </div>

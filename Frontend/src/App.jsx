@@ -21,7 +21,7 @@ function App() {
         <Route path="/" element={< LandingPage/>} />
 
         <Route path="/products" element={<ProductList />} />
-        <Route path="/product" element={<SingleProduct />} />
+        <Route path="/product/:productId" element={<SingleProduct />} />
       </Routes>
       <Footer />
     </Router>

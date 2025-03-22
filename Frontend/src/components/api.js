@@ -42,7 +42,7 @@ export const getUserByEmail = async (email) => {
 
 export const getFarmerByEmail = async (email, token) => {
     try {
-        const response = await api.get(`${API_URL}/farmers/${email}`, {
+        const response = await fetch(`${API_URL}/farmers/${email}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

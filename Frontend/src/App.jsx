@@ -5,9 +5,10 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 
 // import ProductList from './components/Product/ProductList';
-import { useState } from 'react';
+
 import ProductList from './components/Product/ProductList';
 import SingleProduct from './components/SingleProduct/SingleProduct';
+import FarmerProfile from './components/FarmerProfile/FarmerProfile';
 
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
 
         <Route path="/products" element={<ProductList />} />
         <Route path="/product" element={<SingleProduct />} />
+        <Route path="/farmer" element={<FarmerProfile />} />
+        
       </Routes>
       <Footer />
     </Router>

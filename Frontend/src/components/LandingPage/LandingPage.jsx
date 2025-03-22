@@ -3,7 +3,6 @@ import './LandingPage.css';
 import farmersImage from '../../assets/farmers-illustration.jpg';
 import organicVegetables from '../../assets/organic-vegetables.jpg';
 import freshFruits from '../../assets/fresh-fruits.jpg';
-import pureHoney from '../../assets/pure-honey.jpg';
 import organicGrains from '../../assets/organic-grains.jpg';
 import rajeshKumar from '../../assets/rajesh-kumar.jpg';
 import priyaSingh from '../../assets/priya-singh.jpg';
@@ -15,10 +14,11 @@ import { FaUserPlus, FaCheck, FaStore, FaSearch, FaShoppingCart, FaCertificate, 
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdVerifiedUser } from "react-icons/md";
 import { BiLeaf } from "react-icons/bi";
+import { Link } from 'react-router-dom';
 
 
 const LandingPage = () => {
-  
+
   // Function to render stars based on rating and total
   const renderStars = (rating, total = 5) => {
     const stars = [];
@@ -140,28 +140,24 @@ const LandingPage = () => {
         <div className="featured-products-d6">
           <h2 className="section-title-d6">Featured Products</h2>
           <div className="products-d6">
-            <div className="product-card-d6">
-              <img src={organicVegetables} alt="Organic Vegetables" className="product-image-d6" />
-              <h3 className="product-title-d6">Organic Vegetables</h3>
-              <p className="product-price-d6">₹249.99/kg</p>
-              <button className="view-details-button-d6">View Details</button>
-            </div>
+            <Link to="/products">
+              <div className="product-card-d6">
+                <img src={organicVegetables} alt="Organic Vegetables" className="product-image-d6" />
+                <h3 className="product-title-d6">Organic Vegetables</h3>
+                <p className="product-price-d6">₹249/kg</p>
+                <button className="view-details-button-d6">View Details</button>
+              </div>
+            </Link>
             <div className="product-card-d6">
               <img src={freshFruits} alt="Fresh Fruits" className="product-image-d6" />
-              <h3 className="product-title-d6">Fresh Fruits</h3>
-              <p className="product-price-d6">₹199.99/kg</p>
-              <button className="view-details-button-d6">View Details</button>
-            </div>
-            <div className="product-card-d6">
-              <img src={pureHoney} alt="Pure Honey" className="product-image-d6" />
-              <h3 className="product-title-d6">Pure Honey</h3>
-              <p className="product-price-d6">₹399.99/bottle</p>
+              <h3 className="product-title-d6">Organic Fruits</h3>
+              <p className="product-price-d6">₹199/kg</p>
               <button className="view-details-button-d6">View Details</button>
             </div>
             <div className="product-card-d6">
               <img src={organicGrains} alt="Organic Grains" className="product-image-d6" />
               <h3 className="product-title-d6">Organic Grains</h3>
-              <p className="product-price-d6">₹89.99/kg</p>
+              <p className="product-price-d6">₹89/kg</p>
               <button className="view-details-button-d6">View Details</button>
             </div>
           </div>

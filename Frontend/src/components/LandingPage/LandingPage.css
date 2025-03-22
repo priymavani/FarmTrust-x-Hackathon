@@ -1,0 +1,954 @@
+/* src/styles/LandingPage.css */
+.landing-page-d6 {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Banner Section with Light Green Background */
+  .banner-section-d6 {
+    background-color: #e6f3e6; /* Light green background */
+  }
+  
+  /* Farmer Banner */
+  .farmer-banner-d6 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .banner-content-d6 {
+    max-width: 50%;
+  }
+  
+  .banner-title-d6 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+    line-height: 1.2;
+    margin-bottom: 15px;
+  }
+  
+  .banner-title-d6 span {
+    color: #28a745;
+    display: block;
+  }
+  
+  .banner-description-d6 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  
+  .explore-button-d6 {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .explore-button-d6:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .banner-image-d6 {
+    width: 50%;
+  }
+  
+  .banner-image-d6 img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  /* Content Section with White Background */
+  .content-d6 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px; /* Removed top and bottom padding to eliminate gaps */
+    background-color: #ffffff; /* White background for the rest of the page */
+  }
+  
+  /* Why Choose Us Section */
+  .why-choose-us-d6 {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+  }
+  
+  .section-title-d6 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 30px;
+  }
+  
+  .features-d6 {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+  }
+  
+  .feature-item-d6 {
+    flex: 1;
+    max-width: 300px;
+  }
+  
+  .feature-icon-d6 {
+    font-size: 2rem;
+    color: #28a745;
+    margin-bottom: 15px;
+  }
+  
+  .feature-title-d6 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 10px;
+  }
+  
+  .feature-description-d6 {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  /* Guide Section - From the image */
+  .guide-section-d6 {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .guides-container-d6 {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+  }
+  
+  .guide-card-d6 {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 350px;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .guide-icon-d6 {
+    font-size: 2rem;
+    color: #28a745;
+    margin-bottom: 15px;
+  }
+  
+  .guide-title-d6 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 10px;
+  }
+  
+  .guide-description-d6 {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  .read-more-btn-d6 {
+    background-color: #000;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .read-more-btn-d6:hover {
+    background-color: #333;
+  }
+  
+  /* Shop Organic Products Section - From the image */
+  .shop-section-d6 {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #ffffff;
+  }
+  
+  .products-container-d6 {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+  }
+  
+  .product-item-d6 {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 300px;
+    width: 100%;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-item-d6:hover {
+    transform: translateY(-5px);
+  }
+  
+  .product-shop-image-d6 {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .product-shop-title-d6 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+    margin: 15px 0;
+  }
+  
+  .explore-products-btn-d6 {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .explore-products-btn-d6:hover {
+    background-color: #218838;
+  }
+  
+  /* Featured Products Section */
+  .featured-products-d6 {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #ffffff;
+  }
+  
+  .products-d6 {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+  }
+  
+  .product-card-d6 {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .product-card-d6 a {
+    text-decoration: none;
+  }
+  
+  .product-card-d6:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .product-image-d6 {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .product-title-d6 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+    margin: 10px 0 5px;
+  }
+  
+  .product-price-d6 {
+    font-size: 0.9rem;
+    color: #28a745;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .view-details-button-d6 {
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .view-details-button-d6:hover {
+    background-color: #333;
+  }
+  
+  /* Recommended Farmers Section */
+  .recommended-farmers-d6 {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #ffffff;
+  }
+  
+  .farmers-d6 {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 20px;
+  }
+  
+  .farmer-card-d6 {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column; /* Changed to column to stack stars below farmer-info */
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 280px;
+    width: 100%;
+  }
+  
+  .farmer-card-d6:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .farmer-image-d6 {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0; /* Removed margin since layout changed */
+  }
+  
+  .farmer-info-d6 {
+    text-align: center; /* Centered text for better alignment */
+    flex-grow: 1;
+  }
+  
+  .farmer-name-d6 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 5px;
+  }
+  
+  .farmer-type-d6 {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+  }
+  
+  .verified-icon-d6 {
+    font-size: 1.2rem;
+    color: #28a745;
+  }
+  
+  .stars-d6 {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+  
+  .star-icon-d6 {
+    font-size: 1rem;
+  }
+  
+  .star-icon-d6.filled-d6 {
+    color: #f5c518; /* Gold color for filled stars */
+  }
+  
+  .star-icon-d6.empty-d6 {
+    color: #ccc; /* Gray color for empty stars */
+  }
+  
+  .review-count-d6 {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 5px;
+  }
+  
+  /* How It Works Section */
+  .how-it-works-d6 {
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #f9f9f9; /* Light gray background for contrast */
+  }
+  
+  .works-container-d6 {
+    display: flex;
+    justify-content: space-around;
+    gap: 40px; /* Increased gap for better spacing */
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .works-column-d6 {
+    flex: 1;
+    text-align: center;
+    max-width: 300px; /* Limit column width to match image */
+  }
+  
+  .column-title-d6 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 15px;
+  }
+  
+  .works-step-d6 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px; /* Adjusted gap between icons */
+  }
+  
+  .step-icon-d6 {
+    width: 50px; /* Fixed size to match image */
+    height: 50px;
+    background-color: #e0f7e9; /* Light green background for icons */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem; /* Reduced font size to fit within circle */
+    color: #000;
+    transition: transform 0.3s ease;
+    padding: 2px; /* Added padding to center the icon */
+    box-sizing: border-box; /* Ensure padding doesn't affect size */
+  }
+  
+  .step-icon-d6:hover {
+    transform: scale(1.1);
+  }
+  
+  .step-line-d6 {
+    width: 60px; /* Increased line length to match image */
+    height: 2px;
+    background-color: #28a745;
+    flex-shrink: 0;
+  }
+  
+  .works-description-d6 {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  
+  /* Customer Testimonials Section */
+  .testimonials-d6 {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #ffffff;
+  }
+  
+  .testimonials-container-d6 {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .testimonial-card-d6 {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 300px;
+    width: 100%;
+  }
+  
+  .testimonial-card-d6:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .testimonial-text-d6 {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 10px 0 15px;
+    font-style: italic;
+  }
+  
+  .customer-info-d6 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .customer-image-d6 {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .customer-details-d6 {
+    text-align: left;
+  }
+  
+  .customer-name-d6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+  }
+  
+  .customer-role-d6 {
+    font-size: 0.75rem;
+    color: #999;
+    margin: 0;
+  }
+  
+  /* Join Our Growing Community Section */
+  .community-section-d6 {
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #e6f3e6; /* Light green background matching the image */
+  }
+  
+  .community-title-d6 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  .community-buttons-d6 {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .community-button-d6 {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .community-button-d6:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .farmer-banner-d6 {
+      padding: 15px;
+    }
+  
+    .banner-title-d6 {
+      font-size: 1.8rem;
+    }
+  
+    .banner-description-d6 {
+      font-size: 0.9rem;
+    }
+  
+    .banner-image-d6 {
+      width: 45%;
+    }
+  
+    .features-d6 {
+      flex-direction: row;
+      gap: 15px;
+    }
+  
+    .products-d6 {
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+  
+    .product-card-d6 {
+      flex: 1 1 45%;
+      max-width: 45%;
+    }
+  
+    .farmers-d6 {
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+  
+    .farmer-card-d6 {
+      flex: 1 1 45%;
+      max-width: 45%;
+    }
+  
+    .works-container-d6 {
+      flex-direction: column;
+      gap: 30px;
+    }
+  
+    .works-step-d6 {
+      justify-content: space-between;
+      width: 100%;
+    }
+  
+    .step-line-d6 {
+      width: 40%;
+    }
+  
+    .testimonials-container-d6 {
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+  
+    .testimonial-card-d6 {
+      flex: 1 1 45%;
+      max-width: 45%;
+    }
+  
+    .community-buttons-d6 {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .community-button-d6 {
+      width: 200px;
+      margin: 0 auto;
+    }
+    
+    .guides-container-d6 {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .products-container-d6 {
+      flex-wrap: wrap;
+    }
+    
+    .product-item-d6 {
+      flex: 1 1 45%;
+      min-width: 250px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .farmer-banner-d6 {
+      flex-direction: column;
+      text-align: center;
+      padding: 15px;
+    }
+  
+    .banner-content-d6 {
+      max-width: 100%;
+      margin-bottom: 15px;
+    }
+  
+    .banner-title-d6 {
+      font-size: 1.3rem;
+    }
+  
+    .banner-description-d6 {
+      font-size: 0.85rem;
+    }
+  
+    .banner-image-d6 {
+      width: 100%;
+    }
+  
+    .explore-button-d6 {
+      padding: 8px 15px;
+      font-size: 0.85rem;
+    }
+  
+    .why-choose-us-d6 {
+      padding: 30px 15px;
+    }
+  
+    .section-title-d6 {
+      font-size: 1.3rem;
+    }
+  
+    .features-d6 {
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+    }
+  
+    .feature-item-d6 {
+      max-width: 100%;
+    }
+  
+    .products-d6 {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .product-card-d6 {
+      max-width: 100%;
+    }
+  
+    .farmers-d6 {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .farmer-card-d6 {
+      max-width: 100%;
+    }
+  
+    .works-container-d6 {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .works-step-d6 {
+      justify-content: space-around;
+    }
+  
+    .step-line-d6 {
+      width: 30%;
+    }
+  
+    .testimonials-container-d6 {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .testimonial-card-d6 {
+      max-width: 100%;
+    }
+  
+    .community-title-d6 {
+      font-size: 1.2rem;
+    }
+  
+    .community-buttons-d6 {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .community-button-d6 {
+      width: 180px;
+      margin: 0 auto;
+    }
+    
+    .products-container-d6 {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .product-item-d6 {
+      max-width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .farmer-banner-d6 {
+      padding: 10px;
+    }
+  
+    .banner-title-d6 {
+      font-size: 1.1rem;
+    }
+  
+    .banner-description-d6 {
+      font-size: 0.75rem;
+    }
+  
+    .explore-button-d6 {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+  
+    .why-choose-us-d6 {
+      padding: 20px 10px;
+    }
+  
+    .section-title-d6 {
+      font-size: 1.1rem;
+    }
+  
+    .feature-icon-d6 {
+      font-size: 1.8rem;
+    }
+  
+    .feature-title-d6 {
+      font-size: 1rem;
+    }
+  
+    .feature-description-d6 {
+      font-size: 0.75rem;
+    }
+  
+    .featured-products-d6 {
+      padding: 20px 10px;
+    }
+  
+    .product-image-d6 {
+      height: 120px;
+    }
+  
+    .product-title-d6 {
+      font-size: 1rem;
+    }
+  
+    .product-price-d6 {
+      font-size: 0.85rem;
+    }
+  
+    .view-details-button-d6 {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+    }
+  
+    .recommended-farmers-d6 {
+      padding: 20px 10px;
+    }
+  
+    .farmer-image-d6 {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .farmer-name-d6 {
+      font-size: 1rem;
+    }
+  
+    .farmer-type-d6 {
+      font-size: 0.75rem;
+    }
+  
+    .verified-icon-d6 {
+      font-size: 1rem;
+    }
+  
+    .works-container-d6 {
+      flex-direction: column;
+      gap: 15px;
+    }
+  
+    .works-step-d6 {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .step-line-d6 {
+      display: none; /* Remove lines on very small screens */
+    }
+  
+    .step-icon-d6 {
+      font-size: 1.2rem;
+    }
+  
+    .works-description-d6 {
+      font-size: 0.75rem;
+    }
+  
+    .testimonials-d6 {
+      padding: 20px 10px;
+    }
+  
+    .testimonial-text-d6 {
+      font-size: 0.85rem;
+    }
+  
+    .customer-image-d6 {
+      width: 35px;
+      height: 35px;
+    }
+  
+    .customer-name-d6 {
+      font-size: 0.9rem;
+    }
+  
+    .customer-role-d6 {
+      font-size: 0.7rem;
+    }
+  
+    .community-title-d6 {
+      font-size: 1rem;
+    }
+  
+    .community-buttons-d6 {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .community-button-d6 {
+      width: 150px;
+      margin: 0 auto;
+    }
+    
+    .guide-card-d6 {
+      padding: 20px;
+    }
+    
+    .guide-description-d6 {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .language-switcher-d6 select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .language-switcher-d6 select:focus {
+    outline: none;
+    border-color: #2e7d32;
+  }

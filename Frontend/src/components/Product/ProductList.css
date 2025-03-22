@@ -91,6 +91,10 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
+
+  .products-grid a{
+    text-decoration: none;
+  }
   
   .product-card {
     background-color: white;

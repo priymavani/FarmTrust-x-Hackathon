@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css';
-import { getAllProducts } from '../api'; 
+import { getAllProducts } from '../api';
+import { Link } from 'react-router-dom';
 
 const ProductList = () => {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -47,7 +48,7 @@ const ProductList = () => {
 
     // Filter by category
     if (activeCategory !== 'All') {
-      filtered = filtered.filter(product => 
+      filtered = filtered.filter(product =>
         product.category.toLowerCase() === activeCategory.toLowerCase()
       );
     }
@@ -101,49 +102,49 @@ const ProductList = () => {
   return (
     <div className="product-container">
       <h1>Explore Natural Products</h1>
-      
+
       {/* Category Filters */}
       <div className="category-filters">
-        <button 
-          className={activeCategory === 'All' ? 'active' : ''} 
+        <button
+          className={activeCategory === 'All' ? 'active' : ''}
           onClick={() => setActiveCategory('All')}
         >
           All
         </button>
-        <button 
-          className={activeCategory === 'Vegetables' ? 'active' : ''} 
+        <button
+          className={activeCategory === 'Vegetables' ? 'active' : ''}
           onClick={() => setActiveCategory('Vegetables')}
         >
           Vegetables
         </button>
-        <button 
-          className={activeCategory === 'Fruits' ? 'active' : ''} 
+        <button
+          className={activeCategory === 'Fruits' ? 'active' : ''}
           onClick={() => setActiveCategory('Fruits')}
         >
           Fruits
         </button>
-        <button 
-          className={activeCategory === 'Grains' ? 'active' : ''} 
+        <button
+          className={activeCategory === 'Grains' ? 'active' : ''}
           onClick={() => setActiveCategory('Grains')}
         >
           Grains
         </button>
       </div>
-      
+
       {/* Price Range and Sort */}
       <div className="filter-controls">
         <div className="price-range">
           <span>Price Range:</span>
-          <input 
-            type="range" 
-            min="0" 
-            max="500" 
-            value={priceRange} 
-            onChange={(e) => setPriceRange(parseInt(e.target.value))} 
+          <input
+            type="range"
+            min="0"
+            max="500"
+            value={priceRange}
+            onChange={(e) => setPriceRange(parseInt(e.target.value))}
           />
           <span>₹0 - ₹{priceRange}</span>
         </div>
-        
+
         <div className="sort-by">
           <label>Sort by: </label>
           <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
@@ -154,29 +155,31 @@ const ProductList = () => {
           </select>
         </div>
       </div>
-      
+
       {/* Products Grid */}
       <div className="products-grid">
         {displayedProducts.map(product => (
-          <div className="product-card" key={product.id}>
-            <div className="product-image">
-              <img src={product.image} alt={product.name} />
-            </div>
-            <div className="product-details">
-              <h3>{product.name}</h3>
-              <div className="rating">
-                {renderStars(product.rating)}
-                <span className="reviews">({product.reviews} reviews)</span>
+          <Link to={`/product/${product.id}`} key={product.id}>
+            <div className="product-card">
+              <div className="product-image">
+                <img src={product.image} alt={product.name} />
               </div>
-              <div className="price-action">
-                <span className="price">₹{product.price}/{product.unit}</span>
-                <button className="add-to-cart">Add to Cart</button>
+              <div className="product-details">
+                <h3>{product.name}</h3>
+                <div className="rating">
+                  {renderStars(product.rating)}
+                  <span className="reviews">({product.reviews} reviews)</span>
+                </div>
+                <div className="price-action">
+                  <span className="price">₹{product.price}/{product.unit}</span>
+                  <button className="add-to-cart">Add to Cart</button>
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
-      
+
       {/* Message when no products match */}
       {displayedProducts.length === 0 && (
         <div className="no-products-message">

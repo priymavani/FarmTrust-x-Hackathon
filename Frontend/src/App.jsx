@@ -6,7 +6,6 @@ import ProductList from './components/Product/ProductList';
 import SingleProduct from './components/SingleProduct/SingleProduct';
 import FarmerProfile from './components/FarmerProfile/FarmerProfile';
 import Farmer from './components/Farmer';
-import Recommendation from './components/Recommendation';
 import UserDashboard from './UserDashboard';
 
 

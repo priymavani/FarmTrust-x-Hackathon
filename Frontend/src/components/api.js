@@ -57,4 +57,35 @@ export const getFarmerByEmail = async (email, token) => {
     }
 };
 
+export const updateUser = async (id, updatedData, token) => {
+    try {
+        const response = await fetch(`${API_URL}/users/${id}`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData),
+        });
+        if (!response.ok) throw new Error('Failed to update user');
+        const data = await response.json();
+        return data.user; // Return the updated user object
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw error;
+    }
+};
+
+export const getAllOrders = async (token) => {
+    try {
+        const response = await api.get('/orders', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data.orders; // Return the 'orders' array from { message, orders }
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error.response?.data?.message || 'Failed to fetch orders';
+    }
+};
+
 export default api;

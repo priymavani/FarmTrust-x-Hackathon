@@ -7,11 +7,27 @@ const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const Farmer = require('./models/farmer');
 const User = require('./models/user');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const http = require('http');
+const { Server } = require('socket.io');
+const Chat = require('./models/chat');
+
 
 dotenv.config();
 
 const app = express();
 const PORT = 5000;
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
+  },
+  transports: ['websocket', 'polling'],
+});
 
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -38,7 +54,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const storage = multer.memoryStorage();
+
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -56,24 +76,36 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-app.post("/api/recommend", async (req, res) => {
-  const { userQuery } = req.body;
-
-  if (!userQuery) {
-    return res.status(400).json({ error: "Query is required" });
-  }
-
+app.post("/chatbot/query", async (req, res) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const chat = model.startChat();
-    
-    const response = await chat.sendMessage(`Suggest top 3 organic farming products for: ${userQuery}`);
-    
-    const text = response.response.text();
-    res.json({ recommendations: text.split("\n") });
+    const { question } = req.body;
+    if (!question) {
+      return res.status(400).json({ error: "Question is required" });
+    }
+
+    // 🔹 Only Organic Product Recommendation Logic
+    const prompt = `
+      You are FarmTrust's helpful assistant. FarmTrust is a trust-driven marketplace connecting farmers directly with consumers. 
+      Your task is to recommend only **organic products** like fresh vegetables, seasonal fruits, and grains.
+
+      **Rules for Recommendation:**
+      1️⃣ Always suggest only organic products (Vegetables, Fruits, Grains).  
+      2️⃣ If the user asks for seasonal produce, include **current seasonal fruits, vegetables, and grains**.  
+      3️⃣ If the user asks about farming, focus on **sustainable & organic farming practices**.  
+      4️⃣ Do not suggest non-organic items or processed foods.  
+
+      🔹 **User Query:** ${question}  
+      🔹 **Provide a response in simple and informative language.**  
+    `;
+
+    const result = await model.generateContent(prompt);
+    const botResponse =
+      result.response.text() || "Sorry, I couldn't generate a response.";
+
+    res.status(200).json({ response: botResponse });
   } catch (error) {
-    console.error("Google Gemini API Error:", error);
-    res.status(500).json({ error: "Failed to fetch recommendations", details: error.message });
+    console.error("Error in chatbot query:", error);
+    res.status(500).json({ error: "Failed to process query" });
   }
 });
 
@@ -341,7 +373,7 @@ app.post('/users', async (req, res) => {
 app.patch('/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, phone, address, cart, orders, role } = req.body;
+    const { name, phone, address, cart, orders, role } = req.body;
 
     const user = await User.findById(id);
     if (!user) {
@@ -349,13 +381,6 @@ app.patch('/users/:id', async (req, res) => {
     }
 
     if (name) user.name = name;
-    if (email) {
-      const existingUser = await User.findOne({ email });
-      if (existingUser && existingUser._id !== id) {
-        return res.status(400).json({ message: 'Email already in use' });
-      }
-      user.email = email;
-    }
     if (phone) user.phone = phone;
     if (address) user.address = JSON.parse(address);
     if (role) user.role = role;
@@ -442,13 +467,14 @@ app.delete('/users/:id/cart/:productId', async (req, res) => {
 
 app.get('/orders', async (req, res) => {
   try {
-    const users = await User.find({}, { orders: 1, name: 1, phone: 1, address: 1, _id: 0 });
+    const users = await User.find({}, { orders: 1, name: 1, phone: 1, address: 1, _id: 0, email: 1 });
 
     const allOrders = users.reduce((acc, user) => {
       const userOrders = user.orders.map(order => ({
         ...order.toObject(),
         userName: user.name,
         userPhone: user.phone || 'Not provided',
+        userEmail: user.email,
         userAddress: `${user.address.street}, ${user.address.city}, ${user.address.state} ${user.address.zipCode}`.trim().replace(/\s*,\s*/g, ', ') || 'Not provided'
       }));
       return acc.concat(userOrders);
@@ -464,6 +490,160 @@ app.get('/orders', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// Socket.IO Connection
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+  
+    socket.on('joinChat', ({ userEmail, farmerEmail }, callback) => {
+      const normalizedUserEmail = userEmail.toLowerCase();
+      const normalizedFarmerEmail = farmerEmail.toLowerCase();
+      const room = `${normalizedUserEmail}_${normalizedFarmerEmail}`;
+      socket.join(room);
+      console.log(`Joined room: ${room}`);
+      if (callback) callback({ status: 'Joined room successfully' });
+    });
+  
+    socket.on('sendMessage', async (message, callback) => {
+      try {
+        const { senderType, senderEmail, receiverType, receiverEmail, content } = message;
+        console.log('Received message:', message);
+  
+        if (!senderType || !senderEmail || !receiverType || !receiverEmail || !content) {
+          throw new Error('Invalid message data: Missing required fields');
+        }
+  
+        const userEmail = senderType === 'customer' ? senderEmail : receiverEmail;
+        const farmerEmail = senderType === 'farmer' ? senderEmail : receiverEmail;
+  
+        const newMessage = {
+          sender: {
+            type: senderType,
+            email: senderEmail,
+          },
+          receiverEmail, // Add receiverEmail for client-side room computation
+          content,
+          createdAt: new Date(),
+          isRead: false,
+        };
+  
+        console.log('Updating chat for:', { userEmail, farmerEmail });
+        let chat = await Chat.findOneAndUpdate(
+          {
+            'participants.userEmail': { $regex: new RegExp(`^${userEmail}$`, 'i') },
+            'participants.farmerEmail': { $regex: new RegExp(`^${farmerEmail}$`, 'i') },
+          },
+          {
+            $push: { messages: newMessage },
+            $set: { lastMessageAt: new Date() },
+          },
+          {
+            new: true,
+            upsert: true,
+          }
+        );
+  
+        console.log('Chat updated:', chat);
+  
+        const normalizedUserEmail = userEmail.toLowerCase();
+        const normalizedFarmerEmail = farmerEmail.toLowerCase();
+        const room = `${normalizedUserEmail}_${normalizedFarmerEmail}`;
+        console.log('Emitting message to room:', room);
+        console.log('Message being emitted:', newMessage);
+        io.to(room).emit('receiveMessage', newMessage);
+  
+        if (callback) callback({ status: 'Message sent successfully' });
+      } catch (error) {
+        console.error('Error saving message:', error.message, error.stack);
+        if (callback) callback({ error: 'Failed to send message', details: error.message });
+      }
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('User disconnected:', socket.id);
+    });
+  });
+  
+  // Routes
+  app.get('/chat/conversations/customer/:userEmail', async (req, res) => {
+    try {
+      const chats = await Chat.find({ 'participants.userEmail': req.params.userEmail })
+        .sort({ lastMessageAt: -1 });
+      const chatData = await Promise.all(chats.map(async (chat) => {
+        const farmer = await Farmer.findOne({ email: chat.participants.farmerEmail }, 'name');
+        return {
+          userEmail: chat.participants.userEmail,
+          farmerEmail: chat.participants.farmerEmail,
+          farmerName: farmer ? farmer.name : 'Unknown Farmer',
+          lastMessage: chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null,
+          lastMessageAt: chat.lastMessageAt,
+        };
+      }));
+      res.json(chatData);
+    } catch (error) {
+      console.error('Error fetching customer conversations:', error);
+      res.status(500).json({ error: 'Failed to fetch conversations' });
+    }
+  });
+  
+  app.get('/chat/conversations/farmer/:farmerEmail', async (req, res) => {
+    try {
+      const farmerEmail = req.params.farmerEmail;
+      console.log('Fetching chats for farmer:', farmerEmail);
+      const chats = await Chat.find({
+        'participants.farmerEmail': { $regex: new RegExp(`^${farmerEmail}$`, 'i') },
+      }).sort({ lastMessageAt: -1 });
+  
+      console.log('Found chats:', chats);
+  
+      const chatData = await Promise.all(chats.map(async (chat) => {
+        const user = await User.findOne({ email: chat.participants.userEmail }, 'name');
+        return {
+          userEmail: chat.participants.userEmail,
+          farmerEmail: chat.participants.farmerEmail,
+          userName: user ? user.name : chat.participants.userEmail,
+          lastMessage: chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null,
+          lastMessageAt: chat.lastMessageAt,
+        };
+      }));
+  
+      res.json(chatData);
+    } catch (error) {
+      console.error('Error fetching farmer conversations:', error);
+      res.status(500).json({ error: 'Failed to fetch conversations' });
+    }
+  });
+  
+  app.get('/chat/history', async (req, res) => {
+    const { userEmail, farmerEmail } = req.query;
+    try {
+      const chat = await Chat.findOne({
+        'participants.userEmail': userEmail,
+        'participants.farmerEmail': farmerEmail,
+      });
+      if (!chat) {
+        return res.json([]);
+      }
+      res.json(chat.messages);
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      res.status(500).json({ error: 'Failed to fetch chat history' });
+    }
+  });
+  
+  app.get('/api/farmer/:email', async (req, res) => {
+    const { email } = req.params;
+    try {
+      const farmer = await Farmer.findOne({ email }, 'name email');
+      if (!farmer) {
+        return res.status(404).json({ error: 'Farmer not found' });
+      }
+      res.json({ email: farmer.email, name: farmer.name });
+    } catch (error) {
+      console.error('Error fetching farmer:', error);
+      res.status(500).json({ error: 'Failed to fetch farmer' });
+    }
+  });
+  
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

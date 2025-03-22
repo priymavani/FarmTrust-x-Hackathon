@@ -8,6 +8,7 @@ import FarmerProfile from './components/FarmerProfile/FarmerProfile';
 import Farmer from './components/Farmer';
 import UserDashboard from './UserDashboard';
 import FarmerApplyForm from './components/FarmerApplyForm/FarmerApplyForm';
+import Chatbot from './components/ChatBot/ChatBot';
 
 
 
@@ -36,6 +37,7 @@ function AppContent() {
         <Route path="/user/*" element={<UserDashboard />} />
         <Route path="/farmer-application" element={<FarmerApplyForm />} />
       </Routes>
+      <Chatbot/>
       <Footer />
     </>
   );

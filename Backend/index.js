@@ -1,16 +1,19 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+const chat = model.startChat();
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const Farmer = require('./models/farmer');
-
+const axios = require("axios");
 dotenv.config();
 
 const app = express();
-
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const PORT = 5000;
 
 mongoose
@@ -54,6 +57,27 @@ const upload = multer({
     cb(null, true);
   },
   limits: { fileSize: 5 * 1024 * 1024 }
+});
+
+app.post("/api/recommend", async (req, res) => {
+  const { userQuery } = req.body;
+
+  if (!userQuery) {
+    return res.status(400).json({ error: "Query is required" });
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const chat = model.startChat();
+    
+    const response = await chat.sendMessage(`Suggest top 3 organic farming products for: ${userQuery}`);
+    
+    const text = response.response.text();
+    res.json({ recommendations: text.split("\n") });
+  } catch (error) {
+    console.error("Google Gemini API Error:", error);
+    res.status(500).json({ error: "Failed to fetch recommendations", details: error.message });
+  }
 });
 
 app.post('/farmers', upload.single('profilePic'), async (req, res) => {

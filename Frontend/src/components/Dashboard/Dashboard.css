@@ -1,0 +1,330 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.da-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.da-dashboard{
+  padding: 20px 30px;
+}
+
+.da-welcome-message h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.da-welcome-message p {
+  font-size: 14px;
+  color: #666;
+}
+
+.da-profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.da-profile-image:hover {
+  transform: scale(1.05);
+}
+
+/* Stats Cards Styles */
+.da-stats-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.da-stat-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.da-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.da-stat-info h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.da-stat-info h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.da-stat-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.da-stat-icon.da-green {
+  background-color: #e6f7ee;
+  color: #28a745;
+}
+
+.da-stat-icon.da-blue {
+  background-color: #e6f1ff;
+  color: #0d6efd;
+}
+
+.da-stat-icon.da-yellow {
+  background-color: #fff8e6;
+  color: #ffc107;
+}
+
+.da-stat-icon.da-purple {
+  background-color: #f0e6ff;
+  color: #6f42c1;
+}
+
+/* Table Styles */
+.da-section {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.da-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.da-table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.da-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px;
+}
+
+.da-data-table th, .da-data-table td {
+  padding: 12px 15px;
+  text-align: left;
+}
+
+.da-data-table th {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  border-bottom: 1px solid #eee;
+}
+
+.da-data-table tr {
+  transition: background-color 0.3s ease;
+}
+
+.da-data-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.da-customer-info {
+  display: flex;
+  align-items: center;
+}
+
+.da-customer-info img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.da-status {
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.da-status.da-pending {
+  background-color: #fff8e6;
+  color: #ffc107;
+}
+
+.da-status.da-confirmed {
+  background-color: #e6f7ee;
+  color: #28a745;
+}
+
+/* Messages Section Styles */
+.da-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.da-view-all {
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.da-view-all:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+.da-message-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.da-message-item {
+  display: flex;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s ease;
+}
+
+.da-message-item:hover {
+  background-color: #f9f9f9;
+}
+
+.da-message-item:last-child {
+  border-bottom: none;
+}
+
+.da-message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.da-message-content {
+  flex: 1;
+}
+
+.da-message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.da-message-header h4 {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.da-message-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.da-message-text {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Main Content Styles */
+.da-main-content {
+  flex: 1;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Responsive adjustments for Dashboard */
+@media (max-width: 1200px) {
+  .da-stats-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .da-main-content {
+    padding: 70px 20px 20px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .da-stats-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .da-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .da-user-profile {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+  
+  .da-welcome-message {
+    margin-top: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .da-welcome-message h1 {
+    font-size: 20px;
+  }
+  
+  .da-section {
+    padding: 15px;
+  }
+  
+  .da-message-header {
+    flex-direction: column;
+  }
+  
+  .da-message-time {
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 576px) {
+  .da-main-content {
+    padding: 60px 15px 15px 15px;
+  }
+  
+  .da-message-item {
+    flex-direction: column;
+  }
+  
+  .da-message-avatar {
+    margin-bottom: 10px;
+  }
+  
+  .da-stat-card {
+    padding: 15px;
+  }
+}

@@ -91,6 +91,10 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
   }
+
+  .products-grid a{
+    text-decoration: none;
+  }
   
   .product-card {
     background-color: white;
@@ -162,7 +166,7 @@
   .price {
     font-weight: bold;
     font-size: 16px;
-    color: #333;
+    color: #1aa05b;
   }
   
   .add-to-cart {

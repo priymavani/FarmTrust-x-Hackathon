@@ -1,0 +1,131 @@
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh; /* Full height of the dashboard */
+    background-color: #f0f4f8;
+    position: relative; /* Contain the sidebar within this wrapper */
+  }
+  
+  /* Mobile Menu Button */
+  .mobile-menu-button {
+    display: none;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    padding: 10px;
+    background-color: #2e7d32;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #e0f7fa 0%, #b2dfdb 100%);
+    padding: 20px;
+    position: sticky; /* Fixed within the dashboard wrapper */
+    top: 0; /* Stick to the top of the dashboard wrapper */
+    height: 100vh; /* Full height of the viewport, but contained by parent */
+    transition: transform 0.3s ease;
+    z-index: 10;
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+  }
+  
+  .profile-pic-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 20px;
+  }
+  
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-menu li {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .sidebar-menu li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .sidebar-menu li.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #2e7d32;
+    font-weight: bold;
+  }
+  
+  .icon {
+    margin-right: 10px;
+    color: black;
+  }
+  
+  /* Main Content Styles */
+  .content-wrapper {
+    flex: 1;
+    background-color: #f0f4f8;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .mobile-menu-button {
+      display: block;
+    }
+  
+    .sidebar {
+      position: fixed; /* Use fixed for mobile slide-in behavior */
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      width: 250px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+  
+    .sidebar-open {
+      transform: translateX(0);
+    }
+  
+    .content-wrapper {
+      padding: 20px;
+      padding-top: 60px;
+    }
+  
+    /* Overlay when sidebar is open */
+    .sidebar-open + .content-wrapper::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 9;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-menu-button {
+      display: none;
+    }
+  
+    .sidebar {
+      transform: translateX(0); /* Always visible on desktop */
+    }
+  }

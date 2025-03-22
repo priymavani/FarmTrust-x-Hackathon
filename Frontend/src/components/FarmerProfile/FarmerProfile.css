@@ -1,0 +1,436 @@
+.farmer-profile-container {
+  font-family: 'Arial', sans-serif;
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Profile Section */
+.profile-section {
+  margin-bottom: 20px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.profile-image {
+  width: 300px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 25px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.verified {
+  color: #28a745;
+  font-size: 18px;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.trusted-by {
+  color: #28a745;
+  font-size: 18px;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.contact-info {
+  margin: 4px 0;
+  color: #666;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.contact-buttons {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.message-btn,
+.call-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.message-btn {
+  background-color: #000;
+  color: #fff;
+  width: 12%;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.call-btn {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.report-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  text-decoration: underline;
+}
+
+/* Certifications Section */
+.certifications-section {
+  margin-bottom: 20px;
+}
+
+.certifications-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.certifications-card h3 {
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.certification-items {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.certification-item {
+  text-align: center;
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cert-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+  color: #333;
+  display: flex;
+  justify-content: center;
+}
+
+.certification-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.view-certificate-link {
+  display: block;
+  margin-top: 5px;
+  color: #28a745;
+  text-decoration: none;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+/* About Farmer Section */
+.about-farmer-section {
+  margin-bottom: 20px;
+}
+
+.about-farmer-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.about-farmer-card h3 {
+  font-size: 18px;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.about-farmer-card p {
+  color: #666;
+  line-height: 1.5;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Reviews Section */
+.reviews-section {
+  margin-bottom: 20px;
+}
+
+.reviews-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.reviews-header h3 {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+}
+
+.rating {
+  font-size: 14px;
+  color: #666;
+}
+
+.stars {
+  color: #ffd700;
+  margin-right: 5px;
+}
+
+.review-items {
+  margin-bottom: 15px;
+}
+
+.review-item {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.review-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.review-content {
+  flex: 1;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.review-date {
+  color: #999;
+  font-size: 12px;
+}
+
+.review-rating {
+  color: #ffd700;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.review-text {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.view-all-reviews {
+  text-align: center;
+}
+
+.view-all-link {
+  color: #28a745;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* Products Section */
+.products-section-d {
+  margin-bottom: 20px;
+}
+
+.products-card-d {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.products-header-d {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.products-header-d h3 {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+}
+
+.products-header-d a {
+  color: #28a745;
+  text-decoration: none;
+  font-size: 14px;
+  font-family: 'Arial', sans-serif;
+}
+
+.products-grid-d {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.product-item-d {
+  text-align: center;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.product-image-d {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  transition: transform 0.1s ease-out;
+}
+
+.product-image-d:hover {
+  transform: scale(1.05);
+}
+
+.product-name-d {
+  margin: 0 0 4px;
+  font-size: 27px;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  font-weight: bolder;
+}
+
+.product-price-d {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #28a745;
+  font-family: 'Arial', sans-serif;
+  font-weight: bolder;
+}
+
+.products123-d {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.view-product-btn-d {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: #333;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-header {
+      flex-direction: column;
+  }
+
+  .profile-image {
+      margin-bottom: 15px;
+      margin-right: 0;
+  }
+
+  .report-btn {
+      position: static;
+      margin-top: 10px;
+      width: 100%;
+  }
+
+  .certification-items {
+      flex-wrap: wrap;
+  }
+
+  .certification-item {
+      flex-basis: 50%;
+      margin-bottom: 10px;
+  }
+
+  .products-grid-d {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-buttons {
+      flex-direction: column;
+  }
+
+  .message-btn,
+  .call-btn {
+      width: 100%;
+      margin-bottom: 8px;
+  }
+
+  .products-grid-d {
+      grid-template-columns: 1fr;
+  }
+}

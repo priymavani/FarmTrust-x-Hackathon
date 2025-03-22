@@ -1,0 +1,327 @@
+/* ProfileFarmer.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .fp-profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .fp-page-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .fp-section {
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .fp-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .fp-section-header h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .fp-edit-btn {
+    background: none;
+    border: none;
+    color: #4a90e2;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .fp-action-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .fp-save-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .fp-cancel-btn {
+    background-color: #9e9e9e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .fp-profile-content {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .fp-profile-image-container {
+    width: 100px;
+    margin-right: 30px;
+  }
+  
+  .fp-profile-image {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .fp-form-group-container {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .fp-form-group {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .fp-form-group.fp-full-width {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  
+  .fp-form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .fp-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .fp-form-group input, 
+  .fp-form-group select, 
+  .fp-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .fp-form-group input:disabled, 
+  .fp-form-group select:disabled, 
+  .fp-textarea:disabled {
+    background-color: #f9f9f9;
+    color: #666;
+  }
+  
+  .fp-textarea {
+    resize: vertical;
+    min-height: 100px;
+    width: 100%;
+  }
+  
+  .fp-delivery-charge-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .fp-rupee-sign {
+    font-size: 18px;
+    margin-right: 5px;
+  }
+  
+  .fp-delivery-charge-input {
+    width: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  
+  .fp-delivery-charge-input:disabled {
+    background-color: #f9f9f9;
+    color: #666;
+  }
+  
+  .fp-per-delivery {
+    color: #777;
+  }
+  
+  .fp-certificate-section {
+    margin-bottom: 20px;
+  }
+  
+  .fp-certificate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .fp-certificate-header h3 {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .fp-certificate-display {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+  }
+  
+  .fp-certificate-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .fp-certificate-content {
+    flex: 1;
+  }
+  
+  .fp-pdf-icon-large {
+    font-size: 50px;
+    color: #000000;
+  }
+  
+  .fp-pdf {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .fp-certificate-filename {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .fp-file-upload-container {
+    margin-top: 10px;
+  }
+  
+  .fp-file-input {
+    display: none;
+  }
+  
+  .fp-file-upload-btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .fp-profile-content {
+      flex-direction: column;
+    }
+    
+    .fp-profile-image-container {
+      margin-bottom: 20px;
+      margin-right: 0;
+    }
+    
+    .fp-form-row {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .fp-form-group {
+      min-width: 100%;
+    }
+    
+    .fp-certificate-display {
+      flex-direction: column;
+    }
+    
+    .fp-certificate-icon {
+      margin-right: 0;
+      margin-bottom: 15px;
+    }
+    
+    .fp-certificate-content {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .fp-section {
+      padding: 15px;
+    }
+    
+    .fp-section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .fp-certificate-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    
+    .fp-page-title {
+      font-size: 20px;
+    }
+    
+    .fp-action-buttons {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .fp-delivery-charge-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .fp-delivery-charge-input {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }

@@ -5,19 +5,29 @@ const API_URL = 'http://localhost:5000'; // Adjust this if your backend runs on 
 
 // Axios instance with default configuration
 const api = axios.create({
-  baseURL: API_URL,
-  withCredentials: true, // If your backend uses credentials (CORS)
+    baseURL: API_URL,
+    withCredentials: true, // If your backend uses credentials (CORS)
 });
 
 // Fetch all products from the backend
 export const getAllProducts = async () => {
-  try {
-    const response = await api.get('/farmers/products');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    throw error; // Let the caller handle the error
-  }
+    try {
+        const response = await api.get('/farmers/products');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error; // Let the caller handle the error
+    }
+};
+
+export const getProductById = async (productId) => {
+    try {
+        const response = await api.get(`/farmers/products/${productId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching product with ID ${productId}:`, error);
+        throw error;
+    }
 };
 
 export default api;

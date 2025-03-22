@@ -7,7 +7,7 @@ const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const Farmer = require('./models/farmer');
 const User = require('./models/user');
-
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 dotenv.config();
 
 const app = express();
@@ -38,7 +38,11 @@ app.use(cors({
 }));
 app.use(express.json());
 
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const storage = multer.memoryStorage();
+
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -56,24 +60,36 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-app.post("/api/recommend", async (req, res) => {
-  const { userQuery } = req.body;
-
-  if (!userQuery) {
-    return res.status(400).json({ error: "Query is required" });
-  }
-
+app.post("/chatbot/query", async (req, res) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const chat = model.startChat();
-    
-    const response = await chat.sendMessage(`Suggest top 3 organic farming products for: ${userQuery}`);
-    
-    const text = response.response.text();
-    res.json({ recommendations: text.split("\n") });
+    const { question } = req.body;
+    if (!question) {
+      return res.status(400).json({ error: "Question is required" });
+    }
+
+    // 🔹 Only Organic Product Recommendation Logic
+    const prompt = `
+      You are FarmTrust's helpful assistant. FarmTrust is a trust-driven marketplace connecting farmers directly with consumers. 
+      Your task is to recommend only **organic products** like fresh vegetables, seasonal fruits, and grains.
+
+      **Rules for Recommendation:**
+      1️⃣ Always suggest only organic products (Vegetables, Fruits, Grains).  
+      2️⃣ If the user asks for seasonal produce, include **current seasonal fruits, vegetables, and grains**.  
+      3️⃣ If the user asks about farming, focus on **sustainable & organic farming practices**.  
+      4️⃣ Do not suggest non-organic items or processed foods.  
+
+      🔹 **User Query:** ${question}  
+      🔹 **Provide a response in simple and informative language.**  
+    `;
+
+    const result = await model.generateContent(prompt);
+    const botResponse =
+      result.response.text() || "Sorry, I couldn't generate a response.";
+
+    res.status(200).json({ response: botResponse });
   } catch (error) {
-    console.error("Google Gemini API Error:", error);
-    res.status(500).json({ error: "Failed to fetch recommendations", details: error.message });
+    console.error("Error in chatbot query:", error);
+    res.status(500).json({ error: "Failed to process query" });
   }
 });
 

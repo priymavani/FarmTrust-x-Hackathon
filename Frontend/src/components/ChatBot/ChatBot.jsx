@@ -103,28 +103,28 @@ function Chatbot() {
   };
 
   return (
-    <div className="chatbot-container">
+    <div className="chatbot-container-d1">
       {/* Floating chat button - now using React Icon */}
-      <div className="chatbot-button" onClick={toggleChat}>
-        <FaLeaf className="chatbot-icon" />
-        <div className="notification-dot"></div>
+      <div className="chatbot-button-d1" onClick={toggleChat}>
+        <FaLeaf className="chatbot-icon-d1" />
+        <div className="notification-dot-d1"></div>
       </div>
 
       {/* Chat container */}
-      <div className={`chat-container ${isOpen ? 'open' : ''}`}>
-        <div className="chat-header">
-          <img src={farmLogo} alt="FarmTrust Logo" className="logo" />
+      <div className={`chat-container-d1 ${isOpen ? 'open-d1' : ''}`}>
+        <div className="chat-header-d1">
+          <img src={farmLogo} alt="FarmTrust Logo" className="logo-d1" />
           <h1>FarmTrust Assistant</h1>
-          <button onClick={clearChat} className="clear-btn">Clear</button>
-          <button onClick={closeChat} className="close-btn">×</button>
+          <button onClick={clearChat} className="clear-btn-d1">Clear</button>
+          <button onClick={closeChat} className="close-btn-d1">×</button>
         </div>
         
-        <div className="messages-container">
+        <div className="messages-container-d1">
           {messages.length === 0 && (
-            <div className="welcome-message">
+            <div className="welcome-message-d1">
               <h2>Welcome to FarmTrust!</h2>
               <p>We connect you directly with organic farmers. Ask me about our products, seasonal produce, or sustainable farming practices.</p>
-              <div className="suggestion-chips">
+              <div className="suggestion-chips-d1">
                 <button onClick={() => setInput(getSeasonalSuggestion())}>
                   {getSeasonalSuggestion()}
                 </button>
@@ -144,17 +144,17 @@ function Chatbot() {
           {messages.map((message, index) => (
             <div 
               key={index} 
-              className={`message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+              className={`message-d1 ${message.sender === 'user' ? 'user-message-d1' : 'bot-message-d1'}`}
             >
-              <div className="message-bubble">
+              <div className="message-bubble-d1">
                 {message.text}
               </div>
             </div>
           ))}
 
           {isLoading && (
-            <div className="message bot-message">
-              <div className="message-bubble typing-indicator">
+            <div className="message-d1 bot-message-d1">
+              <div className="message-bubble-d1 typing-indicator-d1">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -165,7 +165,7 @@ function Chatbot() {
           <div ref={messagesEndRef} />
         </div>
         
-        <form onSubmit={sendMessage} className="input-form">
+        <form onSubmit={sendMessage} className="input-form-d1">
           <input
             type="text"
             value={input}

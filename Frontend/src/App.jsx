@@ -3,17 +3,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './components/LandingPage/LandingPage';
 import Navbar from './Navbar';
 import Footer from './Footer';
-
-// import ProductList from './components/Product/ProductList';
-
 import ProductList from './components/Product/ProductList';
 import SingleProduct from './components/SingleProduct/SingleProduct';
 import FarmerProfile from './components/FarmerProfile/FarmerProfile';
-
+import Sidebar from './components/Sidebar/Sidebar';
 
 function App() {
-  
-
   return (
     <Router>
       <Navbar />
@@ -26,6 +21,7 @@ function App() {
         <Route path="/product" element={<SingleProduct />} />
         <Route path="/farmer" element={<FarmerProfile />} />
         
+        <Route path="/sidebar" element={<Sidebar />} />
       </Routes>
       <Footer />
     </Router>

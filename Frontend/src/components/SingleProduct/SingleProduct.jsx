@@ -106,7 +106,7 @@ const SingleProduct = () => {
                   {product.farmer.isVerified && <span className="p-verified-icon">✓</span>}
                 </p>
                 {product.farmer.isVerified && (
-                  <p className="p-seller-title">Verified Farmer</p>
+                  <p className="p-seller-title">Trusted By FarmTrust</p>
                 )}
               </div>
             </div>

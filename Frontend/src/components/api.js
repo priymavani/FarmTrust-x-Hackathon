@@ -30,4 +30,14 @@ export const getProductById = async (productId) => {
     }
 };
 
+export const getUserByEmail = async (email) => {
+    try {
+      const response = await api.get(`/users/${email}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      throw error.response?.data?.message || 'Failed to fetch user';
+    }
+  };
+
 export default api;

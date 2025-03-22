@@ -6,7 +6,9 @@
     padding: 10px 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
   }
   
   /* Logo Styles */
@@ -59,7 +61,7 @@
   /* Icons Styles */
   .navbar-icons {
     display: flex;
-    gap: 10px; /* Adjusted to match the spacing in the image */
+    gap: 30px; /* Adjusted to match the spacing in the image */
     align-items: center;
   }
   
@@ -106,7 +108,7 @@
   .navbar-items {
     display: flex;
     align-items: center;
-    gap: 15px; /* Adjusted to match the spacing in the image */
+    gap: 30px; /* Adjusted to match the spacing in the image */
   }
   
   /* Responsive Styles */

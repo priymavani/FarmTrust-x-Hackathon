@@ -6,7 +6,7 @@ import Footer from './Footer';
 import ProductList from './components/Product/ProductList';
 import SingleProduct from './components/SingleProduct/SingleProduct';
 import FarmerProfile from './components/FarmerProfile/FarmerProfile';
-import Sidebar from './components/Sidebar/Sidebar';
+// import Sidebar from './components/Sidebar/Sidebar';
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         <Route path="/product" element={<SingleProduct />} />
         <Route path="/farmer" element={<FarmerProfile />} />
         
-        <Route path="/sidebar" element={<Sidebar />} />
+        {/* <Route path="/sidebar" element={<Sidebar />} /> */}
       </Routes>
       <Footer />
     </Router>

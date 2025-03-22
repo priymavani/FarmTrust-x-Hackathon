@@ -264,8 +264,12 @@
   
   .products-d6 {
     display: flex;
-    justify-content: space-around;
-    gap: 20px;
+    justify-content: center;
+    gap: 70px;
+  }
+
+  .products-d6 a{
+    text-decoration: none;
   }
   
   .product-card-d6 {

@@ -111,7 +111,7 @@ const SingleProduct = () => {
               </div>
             </div>
             <div className="p-profile-link">
-              <a href="#profile">View Profile</a>
+              <Link to={`/farmer/${product.farmer.email}`} >View Profile</Link>
             </div>
             <div className="p-seller-actions">
               <button className="p-report-store">

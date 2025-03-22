@@ -1,122 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css';
+import { getAllProducts } from '../api'; 
 
 const ProductList = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [priceRange, setPriceRange] = useState(500);
   const [sortBy, setSortBy] = useState('Newest');
   const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); // Store original fetched products
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Product data
-  const products = [
-    {
-      id: 1,
-      name: 'Organic Carrots',
-      category: 'Vegetables',
-      price: 120,
-      unit: 'kg',
-      rating: 4,
-      reviews: 24,
-      image: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?q=80&w=400'
-    },
-    {
-      id: 2,
-      name: 'Fresh Apples',
-      category: 'Fruits',
-      price: 180,
-      unit: 'kg',
-      rating: 5,
-      reviews: 136,
-      image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?q=80&w=400'
-    },
-    {
-      id: 3,
-      name: 'Brown Rice',
-      category: 'Grains',
-      price: 90,
-      unit: 'kg',
-      rating: 4,
-      reviews: 118,
-      image: 'https://images.unsplash.com/photo-1586201375761-83865001e8ac?q=80&w=400'
-    },
-    {
-      id: 4,
-      name: 'Organic Milk',
-      category: 'Other',
-      price: 60,
-      unit: 'L',
-      rating: 5,
-      reviews: 42,
-      image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?q=80&w=400'
-    },
-    // Duplicate products to match the layout in the image
-    {
-      id: 5,
-      name: 'Organic Carrots',
-      category: 'Vegetables',
-      price: 120,
-      unit: 'kg',
-      rating: 4,
-      reviews: 24,
-      image: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?q=80&w=400'
-    },
-    {
-      id: 6,
-      name: 'Fresh Apples',
-      category: 'Fruits',
-      price: 180,
-      unit: 'kg',
-      rating: 5,
-      reviews: 136,
-      image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?q=80&w=400'
-    },
-    {
-      id: 7,
-      name: 'Brown Rice',
-      category: 'Grains',
-      price: 90,
-      unit: 'kg',
-      rating: 4,
-      reviews: 118,
-      image: 'https://images.unsplash.com/photo-1586201375761-83865001e8ac?q=80&w=400'
-    },
-    {
-      id: 8,
-      name: 'Organic Milk',
-      category: 'Other',
-      price: 60,
-      unit: 'L',
-      rating: 5,
-      reviews: 42,
-      image: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?q=80&w=400'
-    }
-  ];
+  // Fetch products from backend on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await getAllProducts();
+        const mappedProducts = data.products.map(product => ({
+          id: product.id, // Use 'id' as per your response
+          name: product.name,
+          category: product.category, // Matches 'fruits', 'vegetables', 'grains'
+          price: product.mrpPerKg,
+          unit: 'kg', // Hardcoded since all are per kg
+          rating: product.rating.average || 0,
+          reviews: product.rating.count || 0,
+          image: product.images[0] || 'https://via.placeholder.com/400' // First image or fallback
+        }));
+        setAllProducts(mappedProducts); // Store original data
+        setDisplayedProducts(mappedProducts); // Initial display
+      } catch (err) {
+        setError('Failed to load products. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Generate star rating display
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span key={i} className={i <= rating ? 'star filled' : 'star'}>
-          ★
-        </span>
+    fetchProducts();
+  }, []); // Fetch only on mount
+
+  // Filter and sort products when filters change
+  useEffect(() => {
+    if (loading || error) return;
+
+    let filtered = [...allProducts]; // Start with all products
+
+    // Filter by category
+    if (activeCategory !== 'All') {
+      filtered = filtered.filter(product => 
+        product.category.toLowerCase() === activeCategory.toLowerCase()
       );
     }
-    return stars;
-  };
 
-  // Filter and sort products when dependencies change
-  useEffect(() => {
-    // First, filter by category
-    let filtered = activeCategory === 'All' 
-      ? [...products] 
-      : products.filter(product => product.category === activeCategory);
-    
-    // Then, filter by price
+    // Filter by price
     filtered = filtered.filter(product => product.price <= priceRange);
-    
-    // Finally, sort the products
-    switch(sortBy) {
+
+    // Sort products
+    switch (sortBy) {
       case 'Price: Low to High':
         filtered.sort((a, b) => a.price - b.price);
         break;
@@ -127,19 +67,42 @@ const ProductList = () => {
         filtered.sort((a, b) => b.rating - a.rating);
         break;
       case 'Newest':
+        // Since backend doesn't provide a timestamp, we'll keep original order
+        // If you add createdAt to backend, you could sort by it here
+        break;
       default:
-        // For demo purposes, we'll just keep the original order for "Newest"
         break;
     }
-    
+
     setDisplayedProducts(filtered);
-  }, [activeCategory, priceRange, sortBy]);
+  }, [activeCategory, priceRange, sortBy, allProducts, loading, error]);
+
+  // Generate star rating display
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} className={i <= Math.round(rating) ? 'star filled' : 'star'}>
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
+  if (loading) {
+    return <div className="product-container">Loading products...</div>;
+  }
+
+  if (error) {
+    return <div className="product-container">{error}</div>;
+  }
 
   return (
     <div className="product-container">
       <h1>Explore Natural Products</h1>
       
-      {/* Category Filters with All button */}
+      {/* Category Filters */}
       <div className="category-filters">
         <button 
           className={activeCategory === 'All' ? 'active' : ''} 

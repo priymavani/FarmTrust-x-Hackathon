@@ -32,12 +32,29 @@ export const getProductById = async (productId) => {
 
 export const getUserByEmail = async (email) => {
     try {
-      const response = await api.get(`/users/${email}`);
-      return response.data;
+        const response = await api.get(`/users/${email}`);
+        return response.data;
     } catch (error) {
-      console.error('Error fetching user:', error);
-      throw error.response?.data?.message || 'Failed to fetch user';
+        console.error('Error fetching user:', error);
+        throw error.response?.data?.message || 'Failed to fetch user';
     }
-  };
+};
+
+export const getFarmerByEmail = async (email, token) => {
+    try {
+        const response = await fetch(`${API_URL}/farmers/${email}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`, // Include token if route is protected
+            },
+        });
+        if (!response.ok) throw new Error('Failed to fetch farmer');
+        const data = await response.json();
+        return data.farmer; // Return the farmer object
+    } catch (error) {
+        return;
+    }
+};
 
 export default api;

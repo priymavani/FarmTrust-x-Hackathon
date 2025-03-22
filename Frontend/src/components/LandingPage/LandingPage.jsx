@@ -15,11 +15,14 @@ import { IoDocumentTextOutline } from "react-icons/io5";
 import { MdVerifiedUser } from "react-icons/md";
 import { BiLeaf } from "react-icons/bi";
 import { Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 
 
 const LandingPage = () => {
+  const { loginWithPopup, isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
 
-  // Function to render stars based on rating and total
   const renderStars = (rating, total = 5) => {
     const stars = [];
     for (let i = 1; i <= total; i++) {
@@ -38,9 +41,20 @@ const LandingPage = () => {
     );
   };
 
-  const handleApplyForFarmer = () => {
-    // Handle farmer application logic
-    console.log("Apply for farmer clicked");
+  const handleApplyForFarmer = async () => {
+    if (isAuthenticated) {
+      navigate('/farmer-application');
+    } else {
+      try {
+        await loginWithPopup();
+        if (isAuthenticated) {
+          navigate('/farmer-application');
+        }
+      } catch (error) {
+        console.error('Login failed or cancelled:', error);
+        return;
+      }
+    }
   };
 
   return (

@@ -6,8 +6,9 @@ import ProductList from './components/Product/ProductList';
 import SingleProduct from './components/SingleProduct/SingleProduct';
 import FarmerProfile from './components/FarmerProfile/FarmerProfile';
 import Farmer from './components/Farmer';
-import Recommendation from './components/Recommendation';
+// import Recommendation from './components/Recommendation';
 import UserDashboard from './UserDashboard';
+import FarmerApplyForm from './components/FarmerApplyForm/FarmerApplyForm';
 
 
 
@@ -31,10 +32,10 @@ function AppContent() {
         <Route path="/products" element={<ProductList />} />
         <Route path="/product/:productId" element={<SingleProduct />} />
         <Route path="/product" element={<SingleProduct />} />
-        <Route path="/farmer" element={<FarmerProfile />} />
+        <Route path="/farmer/:email" element={<FarmerProfile />} />
         <Route path="/farmerpanel/*" element={<Farmer />} />
         <Route path="/user/*" element={<UserDashboard />} />
-
+        <Route path="/farmer-application" element={<FarmerApplyForm />} />
       </Routes>
       <Footer />
     </>

@@ -434,3 +434,34 @@
       grid-template-columns: 1fr;
   }
 }
+
+
+/* Existing styles remain unchanged, adding new ones below */
+
+.contact-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.call-btn {
+  padding: 8px 16px;
+  background: #1aa05b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.call-btn:hover:not(.disabled) {
+  background: #158f4f;
+}
+
+.call-btn.disabled {
+  background: #ccc; /* Greyed out */
+  cursor: not-allowed;
+  color: #666;
+}

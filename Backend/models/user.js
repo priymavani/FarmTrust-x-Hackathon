@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 const { ObjectId } = mongoose.Types;
 
 const userSchema = new mongoose.Schema({
@@ -43,14 +42,5 @@ const userSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 }, { _id: false });
 
-// Pre-save hook to hash password (if provided) and update timestamp
-userSchema.pre('save', async function(next) {
-  if (this.isModified('password') && this.password) {
-    const bcrypt = require('bcrypt');
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  this.updatedAt = Date.now();
-  next();
-});
 
 module.exports = mongoose.model('User', userSchema);

@@ -6,6 +6,7 @@ const { ObjectId } = mongoose.Types;
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const Farmer = require('./models/farmer');
+const User = require('./models/user');
 
 dotenv.config();
 
@@ -278,6 +279,167 @@ app.get('/farmers/:email', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching farmer:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.post('/users', async (req, res) => {
+  try {
+    const { name, email, phone, address, role } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    const userData = {
+      _id: new ObjectId().toString(),
+      name,
+      email,
+      phone: phone || '',
+      address: address || { street: '', city: '', state: '', zipCode: '' },
+      role: role || 'customer'
+    };
+
+    const user = new User(userData);
+    await user.save();
+
+    res.status(201).json({
+      message: 'User created successfully',
+      userId: user._id
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.patch('/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, address, cart, orders, role } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (name) user.name = name;
+    if (email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id !== id) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
+      user.email = email;
+    }
+    if (phone) user.phone = phone;
+    if (address) user.address = JSON.parse(address);
+    if (role) user.role = role;
+
+    if (cart) {
+      const parsedCart = JSON.parse(cart);
+      user.cart.push(...parsedCart);
+    }
+
+    if (orders) {
+      const newOrders = orders.map(order => ({
+        id: new ObjectId().toString(),
+        farmerId: order.farmerId,
+        products: order.products.map(product => ({
+          productId: product.productId,
+          name: product.name,
+          quantityInKg: product.quantityInKg,
+          pricePerKg: product.pricePerKg,
+          totalPrice: product.totalPrice
+        })),
+        totalAmount: order.totalAmount,
+        status: order.status || 'pending'
+      }));
+      user.orders.push(...newOrders);
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: 'User updated successfully',
+      user: user.toObject()
+    });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.get('/users/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      message: 'User retrieved successfully',
+      user: user.toObject()
+    });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.delete('/users/:id/cart/:productId', async (req, res) => {
+  try {
+    const { id, productId } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const cartIndex = user.cart.findIndex(item => item.productId === productId);
+    if (cartIndex === -1) {
+      return res.status(404).json({ message: 'Product not found in cart' });
+    }
+
+    user.cart.splice(cartIndex, 1);
+    await user.save();
+
+    res.status(200).json({
+      message: 'Cart item removed successfully',
+      user: user.toObject()
+    });
+  } catch (error) {
+    console.error('Error removing cart item:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+app.get('/orders', async (req, res) => {
+  try {
+    const users = await User.find({}, { orders: 1, name: 1, phone: 1, address: 1, _id: 0 });
+
+    const allOrders = users.reduce((acc, user) => {
+      const userOrders = user.orders.map(order => ({
+        ...order.toObject(),
+        userName: user.name,
+        userPhone: user.phone || 'Not provided',
+        userAddress: `${user.address.street}, ${user.address.city}, ${user.address.state} ${user.address.zipCode}`.trim().replace(/\s*,\s*/g, ', ') || 'Not provided'
+      }));
+      return acc.concat(userOrders);
+    }, []);
+
+    res.status(200).json({
+      message: 'All orders retrieved successfully',
+      orders: allOrders
+    });
+  } catch (error) {
+    console.error('Error fetching all orders:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

@@ -373,7 +373,7 @@ app.post('/users', async (req, res) => {
 app.patch('/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, phone, address, cart, orders, role } = req.body;
+    const { name, phone, address, cart, orders, role } = req.body;
 
     const user = await User.findById(id);
     if (!user) {
@@ -381,13 +381,6 @@ app.patch('/users/:id', async (req, res) => {
     }
 
     if (name) user.name = name;
-    if (email) {
-      const existingUser = await User.findOne({ email });
-      if (existingUser && existingUser._id !== id) {
-        return res.status(400).json({ message: 'Email already in use' });
-      }
-      user.email = email;
-    }
     if (phone) user.phone = phone;
     if (address) user.address = JSON.parse(address);
     if (role) user.role = role;
@@ -474,13 +467,14 @@ app.delete('/users/:id/cart/:productId', async (req, res) => {
 
 app.get('/orders', async (req, res) => {
   try {
-    const users = await User.find({}, { orders: 1, name: 1, phone: 1, address: 1, _id: 0 });
+    const users = await User.find({}, { orders: 1, name: 1, phone: 1, address: 1, _id: 0, email: 1 });
 
     const allOrders = users.reduce((acc, user) => {
       const userOrders = user.orders.map(order => ({
         ...order.toObject(),
         userName: user.name,
         userPhone: user.phone || 'Not provided',
+        userEmail: user.email,
         userAddress: `${user.address.street}, ${user.address.city}, ${user.address.state} ${user.address.zipCode}`.trim().replace(/\s*,\s*/g, ', ') || 'Not provided'
       }));
       return acc.concat(userOrders);

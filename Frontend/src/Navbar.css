@@ -10,6 +10,10 @@
     top: 0;
     z-index: 10000;
   }
+
+  .navbar-logo-a {
+    text-decoration: none;
+  }
   
   /* Logo Styles */
   .navbar-logo {
@@ -18,6 +22,7 @@
     font-size: 20px; /* Adjusted to match the image */
     font-weight: bold;
     color: #1a8e5f; /* Green color from the image */
+    cursor: pointer;
   }
   
   .logo-icon {

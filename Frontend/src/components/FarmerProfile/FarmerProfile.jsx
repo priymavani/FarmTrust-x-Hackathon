@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './FarmerProfile.css';
-import { FaEnvelope, FaPhoneAlt, FaFlag } from 'react-icons/fa';
+import { FaEnvelope, FaPhoneAlt, FaFlag, FaTimes } from 'react-icons/fa';
 import { MdVerifiedUser } from 'react-icons/md';
 import { FiMessageCircle } from 'react-icons/fi';
 import { FaLocationDot } from 'react-icons/fa6';
@@ -16,13 +16,11 @@ const FarmerProfile = () => {
   const [farmer, setFarmer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showFssaiIframe, setShowFssaiIframe] = useState(false);
-  const [showOrganicIframe, setShowOrganicIframe] = useState(false);
+  const [showCertificatePopup, setShowCertificatePopup] = useState(null); // New state for popup
   const { getAccessTokenSilently } = useAuth0();
   const { email } = useParams();
   const navigate = useNavigate(); // Added for navigation
 
-  // Dummy reviews data
   const dummyReviews = [
     {
       id: '1',
@@ -72,6 +70,16 @@ const FarmerProfile = () => {
   const displayAddress = `${farmer.address.street ? farmer.address.street + ', ' : ''}${
     farmer.address.city ? farmer.address.city + ', ' : ''
   }${farmer.address.state ? farmer.address.state + ' ' : ''}${farmer.address.zipCode || ''}`.trim();
+
+  const openCertificatePopup = (type) => {
+    setShowCertificatePopup(type);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  };
+
+  const closeCertificatePopup = () => {
+    setShowCertificatePopup(null);
+    document.body.style.overflow = 'auto'; // Restore scrolling
+  };
 
   return (
     <div className="farmer-profile-container">
@@ -124,9 +132,9 @@ const FarmerProfile = () => {
                 <p>FSSAI Certified <br /> Valid until Dec 2025</p>
                 <span
                   className="view-certificate-link"
-                  onClick={() => setShowFssaiIframe(!showFssaiIframe)}
+                  onClick={() => openCertificatePopup('fssai')}
                 >
-                  {showFssaiIframe ? 'Hide Certificate' : 'View Certificate'}
+                  View Certificate
                 </span>
               </div>
             )}
@@ -136,9 +144,9 @@ const FarmerProfile = () => {
                 <p>Organic Farming <br /> Valid until Nov 2025</p>
                 <span
                   className="view-certificate-link"
-                  onClick={() => setShowOrganicIframe(!showOrganicIframe)}
+                  onClick={() => openCertificatePopup('organic')}
                 >
-                  {showOrganicIframe ? 'Hide Certificate' : 'View Certificate'}
+                  View Certificate
                 </span>
               </div>
             )}
@@ -194,7 +202,7 @@ const FarmerProfile = () => {
                 <div key={product.id} className="product-item-d">
                   <Link to={`/product/${product.id}`}>
                     <img
-                      src={product.images[0] || 'https://via.placeholder.com/150'}
+                      src={product.images[0]}
                       alt={product.name}
                       className="product-image-d"
                     />
@@ -248,6 +256,30 @@ const FarmerProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Certificate Popup */}
+      {showCertificatePopup && (
+        <div className="certificate-popup-overlay">
+          <div className="certificate-popup-container">
+            <div className="certificate-popup-header">
+              <h3>
+                {showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
+              </h3>
+              <button className="close-certificate-popup" onClick={closeCertificatePopup}>
+                <FaTimes />
+              </button>
+            </div>
+            <div className="certificate-popup-content">
+              <iframe
+                src={`${showCertificatePopup === 'fssai' ? farmer.certificates.fssai : farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
+                title={showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
+                width="100%"
+                height="100%"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

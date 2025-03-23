@@ -1,74 +1,90 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { FaSearch, FaCheck, FaTimes, FaAngleDown } from 'react-icons/fa';
 import './FarmerOrders.css';
-import ProductImage from '../../assets/Organic-Tomatoes.jpg';
-import ConsumerImage from '../../assets/consumer.webp';
-import OrganicCarrots from '../../assets/Organic-Carrots.jpg';
-import OrganicPotatoes from '../../assets/Organic-Potatoes.jpg';
-const FarmerOrders = () => {
-  // Static data for orders
-  const staticOrders = [
-    {
-      id: 1,
-      orderDate: 'Jan 15, 2025',
-      product: 'Organic Tomatoes',
-      productImage: ProductImage,
-      consumer: 'John Smith',
-      consumerImage: ConsumerImage,
-      quantity: '25 Kg',
-      totalPrice: '₹75.00',
-      status: 'Pending',
-      consumerDetails: {
-        address: '123 Main Street, Bangalore, Karnataka',
-        contactNumber: '+91 9876543210'
-      }
-    },
-    {
-      id: 2,
-      orderDate: 'Jan 12, 2025',
-      product: 'Fresh Carrots',
-      productImage: OrganicCarrots,
-      consumer: 'Priya Verma',
-      consumerImage: ConsumerImage,
-      quantity: '10 Kg',
-      totalPrice: '₹120.00',
-      status: 'Confirmed',
-      consumerDetails: {
-        address: '456 Park Avenue, Delhi, Delhi',
-        contactNumber: '+91 9876543211'
-      }
-    },
-    {
-      id: 3,
-      orderDate: 'Jan 10, 2025',
-      product: 'Organic Potatoes',
-      productImage: OrganicPotatoes,
-      consumer: 'Raj Kumar',
-      consumerImage: ConsumerImage,
-      quantity: '15 Kg',
-      totalPrice: '₹60.00',
-      status: 'Canceled',
-      consumerDetails: {
-        address: '789 Rural Road, Chennai, Tamil Nadu',
-        contactNumber: '+91 9876543212'
-      }
-    }
-  ];
+import { getAllOrders, getProductById, getFarmerByEmail } from '../api';
 
-  const [orders, setOrders] = useState(staticOrders);
-  const [filteredOrders, setFilteredOrders] = useState(staticOrders);
+const FarmerOrders = () => {
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [orderFilter, setOrderFilter] = useState("All Orders");
   const [sortOrder, setSortOrder] = useState("Newest First");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [farmerId, setFarmerId] = useState(null);
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const filterDropdownRef = useRef(null);
   const sortDropdownRef = useRef(null);
 
-  // Close dropdowns on outside click
+  useEffect(() => {
+    const fetchFarmerAndOrders = async () => {
+      if (!isAuthenticated || !user?.email) return;
+      try {
+        const token = await getAccessTokenSilently();
+
+        // Fetch farmer's _id using Auth0 email
+        const farmerData = await getFarmerByEmail(user.email, token);
+        if (!farmerData || !farmerData._id) {
+          throw new Error('Farmer not found');
+        }
+        setFarmerId(farmerData._id);
+
+        // Fetch all orders and filter by farmerId
+        const allOrders = await getAllOrders(token);
+        const farmerOrders = allOrders.filter(order => order.farmerId === farmerData._id);
+
+        // Enrich orders with product images using productId
+        const enrichedOrders = await Promise.all(
+          farmerOrders.map(async (order) => {
+            const product = order.products[0]; // Assuming one product per order
+            let productImage = 'https://via.placeholder.com/150'; // Default image
+            try {
+              const productData = await getProductById(product.productId); // Fetch product by productId
+              productImage = productData?.product?.images?.[0] || productImage; // Use first image from response
+            } catch (err) {
+              console.error(`Failed to fetch image for product ${product.productId}:`, err);
+            }
+            return {
+              ...order,
+              id: order.id,
+              orderDate: new Date(order.orderedAt).toLocaleDateString('en-US', {
+                month: 'short',
+                day: '2-digit',
+                year: 'numeric',
+              }),
+              productName: product.name,
+              productImage, // Set fetched image
+              consumer: order.userName,
+              consumerImage: 'https://via.placeholder.com/50', // Static consumer image
+              quantity: `${product.quantityInKg} Kg`,
+              totalPrice: `₹${order.totalAmount.toFixed(2)}`,
+              status: order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase(),
+              consumerDetails: {
+                address: order.userAddress,
+                contactNumber: order.userPhone === "Not provided" ? "N/A" : order.userPhone,
+              },
+            };
+          })
+        );
+
+        setOrders(enrichedOrders);
+        setFilteredOrders(enrichedOrders);
+      } catch (err) {
+        setError('Failed to fetch farmer data or orders.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFarmerAndOrders();
+  }, [isAuthenticated, user?.email, getAccessTokenSilently]);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (filterDropdownRef.current && !filterDropdownRef.current.contains(event.target)) {
@@ -82,7 +98,6 @@ const FarmerOrders = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter orders by status
   const filterOrders = (status) => {
     setOrderFilter(status);
     setIsFilterOpen(false);
@@ -93,20 +108,18 @@ const FarmerOrders = () => {
     }
   };
 
-  // Sort orders by date
   const sortOrders = (sortType) => {
     setSortOrder(sortType);
     setIsSortOpen(false);
     let sorted = [...filteredOrders];
     if (sortType === "Newest First") {
-      sorted.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+      sorted.sort((a, b) => new Date(b.orderedAt) - new Date(a.orderedAt));
     } else {
-      sorted.sort((a, b) => new Date(a.orderDate) - new Date(b.orderDate));
+      sorted.sort((a, b) => new Date(a.orderedAt) - new Date(b.orderedAt));
     }
     setFilteredOrders(sorted);
   };
 
-  // Search orders
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -116,24 +129,22 @@ const FarmerOrders = () => {
       setFilteredOrders(
         orders.filter(order =>
           order.consumer.toLowerCase().includes(term) ||
-          order.product.toLowerCase().includes(term)
+          order.productName.toLowerCase().includes(term)
         )
       );
     }
   };
 
-  // Open/close modal
   const openOrderModal = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
-  
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrder(null);
   };
 
-  // Update order status
   const updateOrderStatus = (orderId, newStatus) => {
     const updatedOrders = orders.map(order =>
       order.id === orderId ? { ...order, status: newStatus } : order
@@ -145,7 +156,13 @@ const FarmerOrders = () => {
     if (selectedOrder && selectedOrder.id === orderId) {
       setSelectedOrder({ ...selectedOrder, status: newStatus });
     }
+    // TODO: Add PATCH request to update status on backend
   };
+
+  if (loading) return <div className="orders-page">Loading...</div>;
+  if (error) return <div className="orders-page">{error}</div>;
+
+  console.log(filteredOrders)
 
   return (
     <div className="orders-page">
@@ -205,11 +222,11 @@ const FarmerOrders = () => {
           <div key={order.id} className="order-row" onClick={() => openOrderModal(order)}>
             <div className="order-item">{order.orderDate}</div>
             <div className="order-item product-item-d3">
-              <img src={order.productImage} alt={order.product} className="product-thumbnail-d3" />
-              <span>{order.product}</span>
+              <img src={order.productImage} alt={order.productName} className="product-thumbnail-d3" />
+              <span>{order.productName}</span>
             </div>
             <div className="order-item consumer-item">
-              <img src={order.consumerImage} alt={order.consumer} className="consumer-thumbnail" />
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPOnPAaq91xDOeIxxT9lMloWMnI28uSVjdANj1ksh4qbXb_gpDNZScToiVO32F9l__UD8&usqp=CAU" alt={order.consumer} className="consumer-thumbnail" />
               <span>{order.consumer}</span>
             </div>
             <div className="order-item">{order.quantity}</div>
@@ -252,13 +269,13 @@ const FarmerOrders = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>Order Details</h2>
-              <button className="close-btn" onClick={closeModal}>×</button>
+              <button className="close-btn2" onClick={closeModal}>×</button>
             </div>
             <div className="modal-body">
               <div className="product-details-d3">
-                <img src={selectedOrder.productImage} alt={selectedOrder.product} className="product-image-d3" />
+                <img src={selectedOrder.productImage} alt={selectedOrder.productName} className="product-image-d3" />
                 <div className="product-info-d3">
-                  <h3>{selectedOrder.product}</h3>
+                  <h3>{selectedOrder.productName}</h3>
                   <div className="order-detail">
                     <span>Order Date: {selectedOrder.orderDate}</span>
                   </div>

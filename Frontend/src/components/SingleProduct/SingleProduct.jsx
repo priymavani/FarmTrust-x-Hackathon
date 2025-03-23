@@ -318,7 +318,7 @@ const SingleProduct = () => {
       </div>
 
       {showPopup && (
-        <div className="popup-overlay">
+        <div className="popup-overlay2">
           <div className="popup-container">
             <div className="popup-header">
               <h3>Complete Your Purchase</h3>

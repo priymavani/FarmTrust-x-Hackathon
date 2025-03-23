@@ -49,7 +49,7 @@ function Chatbot() {
 
     try {
       // Updated to use your backend endpoint with proper error handling
-      const response = await fetch('http://localhost:5000/chatbot/query', {
+      const response = await fetch('https://farmtrust-x-hackathon.onrender.com/chatbot/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

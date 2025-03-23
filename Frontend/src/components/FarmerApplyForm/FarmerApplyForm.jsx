@@ -31,7 +31,7 @@ export default function FarmerApplyForm() {
   // Fetch farmer status from backend
   const checkFarmerStatus = async (email) => {
     try {
-      const response = await axios.get(`http://localhost:5000/farmers/${email}`);
+      const response = await axios.get(`https://farmtrust-x-hackathon.onrender.com/farmers/${email}`);
       const farmer = response.data.farmer;
       setFarmerStatus({ isVerified: farmer.isVerified });
       setSubmitted(true); // Mark as submitted since farmer exists
@@ -95,7 +95,7 @@ export default function FarmerApplyForm() {
     if (!validateForm()) return;
 
     try {
-      const postResponse = await axios.post('http://localhost:5000/farmers', {
+      const postResponse = await axios.post('https://farmtrust-x-hackathon.onrender.com/farmers', {
         name: formData.name,
         email: formData.email,
       });
@@ -112,7 +112,7 @@ export default function FarmerApplyForm() {
       }
 
       const patchResponse = await axios.patch(
-        `http://localhost:5000/farmers/${farmerId}`,
+        `https://farmtrust-x-hackathon.onrender.com/farmers/${farmerId}`,
         patchFormData,
         {
           headers: {

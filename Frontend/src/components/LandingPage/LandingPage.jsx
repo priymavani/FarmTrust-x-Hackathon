@@ -17,11 +17,12 @@ import { BiLeaf } from "react-icons/bi";
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 
 const LandingPage = () => {
   const { loginWithPopup, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
+  const { t } = useTranslation(); 
 
   const renderStars = (rating, total = 5) => {
     const stars = [];
@@ -57,23 +58,25 @@ const LandingPage = () => {
     }
   };
 
+
+
   return (
     <div className="landing-page-d6">
 
       <div className="banner-section-d6">
         <div className="farmer-banner-d6">
           <div className="banner-content-d6">
-            <h1 className="banner-title-d6">Empowering Farmers, Ensuring Authenticity</h1>
-            <p className="banner-description-d6">A transparent marketplace connecting consumers with certified natural farmers.</p>
+            <h1 className="banner-title-d6">{t('empowering_farmers')}</h1>
+            <p className="banner-description-d6">{t('transparent_marketplace')}</p>
             <div>
               <button
                 className="explore-button-d6"
                 style={{ backgroundColor: 'black', marginRight: '10px' }}
                 onClick={handleApplyForFarmer}
               >
-                Apply for Farmer
+                {t('apply_for_farmer')}
               </button>
-              <button className="explore-button-d6">Explore Products</button>
+              <button className="explore-button-d6">{t('explore_products')}</button>
             </div>
           </div>
           <div className="banner-image-d6">
@@ -85,107 +88,107 @@ const LandingPage = () => {
       <div className="content-d6">
         {/* Why Choose Us Section */}
         <div className="why-choose-us-d6">
-          <h2 className="section-title-d6">Why Choose Us</h2>
+          <h2 className="section-title-d6">{t('why_choose_us')}</h2>
           <div className="features-d6">
             <div className="feature-item-d6">
               <MdVerifiedUser className="feature-icon-d6" />
-              <h3 className="feature-title-d6">Verified Farmers</h3>
-              <p className="feature-description-d6">Trust is authentically guaranteed through our rigorous verification process.</p>
+              <h3 className="feature-title-d6">{t('verified_farmers')}</h3>
+              <p className="feature-description-d6">{t('verified_farmers_desc')}</p>
             </div>
             <div className="feature-item-d6">
               <FaStore className="feature-icon-d6" />
-              <h3 className="feature-title-d6">Direct Market</h3>
-              <p className="feature-description-d6">No middlemen ensuring fair pricing for both farmers and consumers.</p>
+              <h3 className="feature-title-d6">{t('direct_market')}</h3>
+              <p className="feature-description-d6">{t('direct_market_desc')}</p>
             </div>
             <div className="feature-item-d6">
               <FaCertificate className="feature-icon-d6" />
-              <h3 className="feature-title-d6">Certified Farmers</h3>
-              <p className="feature-description-d6">FSSAI, Organic, and other certifications verified.</p>
+              <h3 className="feature-title-d6">{t('certified_farmers')}</h3>
+              <p className="feature-description-d6">{t('certified_farmers_desc')}</p>
             </div>
           </div>
         </div>
 
         {/* Guide Section */}
         <div className="guide-section-d6">
-          <h2 className="section-title-d6">Your Guide to a Transparent Marketplace</h2>
+          <h2 className="section-title-d6">{t('guide_title')}</h2>
           <div className="guides-container-d6">
             <div className="guide-card-d6">
               <div className="guide-icon-d6">
                 <BiLeaf />
               </div>
-              <h3 className="guide-title-d6">Farmer Guide</h3>
-              <p className="guide-description-d6">Learn how to register, get verified, and sell your products.</p>
-              <button className="read-more-btn-d6">Read More</button>
+              <h3 className="guide-title-d6">{t('farmer_guide')}</h3>
+              <p className="guide-description-d6">{t('farmer_guide_desc')}</p>
+              <button className="read-more-btn-d6">{t('read_more')}</button>
             </div>
             <div className="guide-card-d6">
               <div className="guide-icon-d6">
                 <FaUser />
               </div>
-              <h3 className="guide-title-d6">User Guide</h3>
-              <p className="guide-description-d6">Understand how to browse, verify authenticity, and make purchases.</p>
-              <button className="read-more-btn-d6">Read More</button>
+              <h3 className="guide-title-d6">{t('user_guide')}</h3>
+              <p className="guide-description-d6">{t('user_guide_desc')}</p>
+              <button className="read-more-btn-d6">{t('read_more')}</button>
             </div>
           </div>
         </div>
 
         {/* Shop Organic Products Section */}
         <div className="shop-section-d6">
-          <h2 className="section-title-d6">Shop Organic Pesticides & Fertilizers</h2>
+          <h2 className="section-title-d6">{t('shop_organic')}</h2>
           <div className="products-container-d6">
             <div className="product-item-d6">
               <img src={organicCompost} alt="Organic Compost Plus" className="product-shop-image-d6" />
-              <h3 className="product-shop-title-d6">Organic Compost Plus</h3>
-              <button className="explore-products-btn-d6">Explore Products</button>
+              <h3 className="product-shop-title-d6">{t('organic_compost')}</h3>
+              <button className="explore-products-btn-d6">{t('explore_products')}</button>
             </div>
             <div className="product-item-d6">
               <img src={naturalPestControl} alt="Natural Pest Control" className="product-shop-image-d6" />
-              <h3 className="product-shop-title-d6">Natural Pest Control</h3>
-              <button className="explore-products-btn-d6">Explore Products</button>
+              <h3 className="product-shop-title-d6">{t('natural_pest_control')}</h3>
+              <button className="explore-products-btn-d6">{t('explore_products')}</button>
             </div>
             <div className="product-item-d6">
               <img src={soilEnricher} alt="Soil Enricher" className="product-shop-image-d6" />
-              <h3 className="product-shop-title-d6">Soil Enricher</h3>
-              <button className="explore-products-btn-d6">Explore Products</button>
+              <h3 className="product-shop-title-d6">{t('soil_enricher')}</h3>
+              <button className="explore-products-btn-d6">{t('explore_products')}</button>
             </div>
           </div>
         </div>
 
         {/* Featured Products Section */}
         <div className="featured-products-d6">
-          <h2 className="section-title-d6">Featured Products</h2>
+          <h2 className="section-title-d6">{t('featured_products')}</h2>
           <div className="products-d6">
             <Link to="/products">
               <div className="product-card-d6">
                 <img src={organicVegetables} alt="Organic Vegetables" className="product-image-d6" />
-                <h3 className="product-title-d6">Organic Vegetables</h3>
+                <h3 className="product-title-d6">{t('organic_vegetables')}</h3>
                 <p className="product-price-d6">₹249/kg</p>
-                <button className="view-details-button-d6">View Details</button>
+                <button className="view-details-button-d6">{t('view_details')}</button>
               </div>
             </Link>
             <div className="product-card-d6">
               <img src={freshFruits} alt="Fresh Fruits" className="product-image-d6" />
-              <h3 className="product-title-d6">Organic Fruits</h3>
+              <h3 className="product-title-d6">{t('organic_fruits')}</h3>
               <p className="product-price-d6">₹199/kg</p>
-              <button className="view-details-button-d6">View Details</button>
+              <button className="view-details-button-d6">{t('view_details')}</button>
             </div>
             <div className="product-card-d6">
               <img src={organicGrains} alt="Organic Grains" className="product-image-d6" />
-              <h3 className="product-title-d6">Organic Grains</h3>
+              <h3 className="product-title-d6">{t('organic_grains')}</h3>
               <p className="product-price-d6">₹89/kg</p>
-              <button className="view-details-button-d6">View Details</button>
+              <button className="view-details-button-d6">{t('view_details')}</button>
             </div>
           </div>
         </div>
 
         {/* Recommended Farmers Section */}
         <div className="recommended-farmers-d6">
-          <h2 className="section-title-d6">Recommended Farmers</h2>
+          <h2 className="section-title-d6">{t('recommended_farmers')}</h2>
           <div className="farmers-d6">
             <div className="farmer-card-d6">
               <img src={rajeshKumar} alt="Rajesh Kumar" className="farmer-image-d6" />
               <div className="farmer-info-d6">
-                <h3 className="farmer-name-d6">Rajesh Kumar</h3>
-                <p className="farmer-type-d6">Organic Farming</p>
+                <h3 className="farmer-name-d6">{t('rajesh_kumar')}</h3>
+                <p className="farmer-type-d6">{t('organic_farming')}</p>
                 {renderStars(4)}
               </div>
               <MdVerifiedUser className="verified-icon-d6" />
@@ -193,8 +196,8 @@ const LandingPage = () => {
             <div className="farmer-card-d6">
               <img src={priyaSingh} alt="Priya Singh" className="farmer-image-d6" />
               <div className="farmer-info-d6">
-                <h3 className="farmer-name-d6">Priya Singh</h3>
-                <p className="farmer-type-d6">Vegetable Farming</p>
+                <h3 className="farmer-name-d6">{t('priya_singh')}</h3>
+                <p className="farmer-type-d6">{t('vegetable_farming')}</p>
                 {renderStars(3)}
               </div>
               <MdVerifiedUser className="verified-icon-d6" />
@@ -202,8 +205,8 @@ const LandingPage = () => {
             <div className="farmer-card-d6">
               <img src={amitPatel} alt="Amit Patel" className="farmer-image-d6" />
               <div className="farmer-info-d6">
-                <h3 className="farmer-name-d6">Amit Patel</h3>
-                <p className="farmer-type-d6">Sustainable Farming</p>
+                <h3 className="farmer-name-d6">{t('amit_patel')}</h3>
+                <p className="farmer-type-d6">{t('sustainable_farming')}</p>
                 {renderStars(5)}
               </div>
               <MdVerifiedUser className="verified-icon-d6" />
@@ -213,10 +216,10 @@ const LandingPage = () => {
 
         {/* How It Works Section */}
         <div className="how-it-works-d6">
-          <h2 className="section-title-d6">How It Works</h2>
+          <h2 className="section-title-d6">{t('how_it_works')}</h2>
           <div className="works-container-d6">
             <div className="works-column-d6">
-              <h3 className="column-title-d6">For Farmers</h3>
+              <h3 className="column-title-d6">{t('for_farmers')}</h3>
               <div className="works-step-d6">
                 <FaUserPlus className="step-icon-d6" />
                 <div className="step-line-d6"></div>
@@ -224,10 +227,10 @@ const LandingPage = () => {
                 <div className="step-line-d6"></div>
                 <FaStore className="step-icon-d6" />
               </div>
-              <p className="works-description-d6">Register → Get Verified → List Products</p>
+              <p className="works-description-d6">{t('for_farmers_steps')}</p>
             </div>
             <div className="works-column-d6">
-              <h3 className="column-title-d6">For Consumers</h3>
+              <h3 className="column-title-d6">{t('for_consumers')}</h3>
               <div className="works-step-d6">
                 <FaSearch className="step-icon-d6" />
                 <div className="step-line-d6"></div>
@@ -235,45 +238,45 @@ const LandingPage = () => {
                 <div className="step-line-d6"></div>
                 <FaShoppingCart className="step-icon-d6" />
               </div>
-              <p className="works-description-d6">Browse → Verify → Buy</p>
+              <p className="works-description-d6">{t('for_consumers_steps')}</p>
             </div>
           </div>
         </div>
 
         {/* Customer Testimonials Section */}
         <div className="testimonials-d6">
-          <h2 className="section-title-d6">Customer Testimonials</h2>
+          <h2 className="section-title-d6">{t('testimonials')}</h2>
           <div className="testimonials-container-d6">
             <div className="testimonial-card-d6">
               {renderStars(5)}
-              <p className="testimonial-text-d6">"I can now directly sell to my customers as a verified farmer. The transparency in the system is commendable."</p>
+              <p className="testimonial-text-d6">{t('sarah_testimonial')}</p>
               <div className="customer-info-d6">
                 <img src={rajeshKumar} alt="Sarah Johnson" className="customer-image-d6" />
                 <div className="customer-details-d6">
-                  <h3 className="customer-name-d6">Sarah Johnson</h3>
-                  <p className="customer-role-d6">Organic Farmer</p>
+                  <h3 className="customer-name-d6">{t('sarah_name')}</h3>
+                  <p className="customer-role-d6">{t('sarah_role')}</p>
                 </div>
               </div>
             </div>
             <div className="testimonial-card-d6">
               {renderStars(5)}
-              <p className="testimonial-text-d6">"FarmTrust has given me complete confidence in the authenticity of the products."</p>
+              <p className="testimonial-text-d6">{t('michael_testimonial')}</p>
               <div className="customer-info-d6">
                 <img src={priyaSingh} alt="Michael Chen" className="customer-image-d6" />
                 <div className="customer-details-d6">
-                  <h3 className="customer-name-d6">Michael Chen</h3>
-                  <p className="customer-role-d6">Regular Customer</p>
+                  <h3 className="customer-name-d6">{t('michael_name')}</h3>
+                  <p className="customer-role-d6">{t('michael_role')}</p>
                 </div>
               </div>
             </div>
             <div className="testimonial-card-d6">
               {renderStars(5)}
-              <p className="testimonial-text-d6">"The quality of products and service are definitely recommend!"</p>
+              <p className="testimonial-text-d6">{t('emma_testimonial')}</p>
               <div className="customer-info-d6">
                 <img src={amitPatel} alt="Emma Wilson" className="customer-image-d6" />
                 <div className="customer-details-d6">
-                  <h3 className="customer-name-d6">Emma Wilson</h3>
-                  <p className="customer-role-d6">Happy Customer</p>
+                  <h3 className="customer-name-d6">{t('emma_name')}</h3>
+                  <p className="customer-role-d6">{t('emma_role')}</p>
                 </div>
               </div>
             </div>
@@ -282,10 +285,10 @@ const LandingPage = () => {
 
         {/* Join Our Growing Community Section */}
         <div className="community-section-d6">
-          <h2 className="community-title-d6">Join Our Growing Community</h2>
+          <h2 className="community-title-d6">{t('join_community')}</h2>
           <div className="community-buttons-d6">
-            <button className="community-button-d6 register-farmer">Register as Farmer</button>
-            <button className="community-button-d6 register-consumer">Register as Consumer</button>
+            <button className="community-button-d6 register-farmer">{t('register_farmer')}</button>
+            <button className="community-button-d6 register-consumer">{t('register_consumer')}</button>
           </div>
         </div>
       </div>

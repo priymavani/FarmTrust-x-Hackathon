@@ -18,19 +18,24 @@ const ProductList = () => {
       try {
         setLoading(true);
         const data = await getAllProducts();
+        console.log("Fetched data:", data); // Debug log
+        if (!data || !Array.isArray(data.products)) {
+          throw new Error('Invalid response from server: products array missing');
+        }
         const mappedProducts = data.products.map(product => ({
-          id: product.id, // Use 'id' as per your response
+          id: product.id,
           name: product.name,
-          category: product.category, // Matches 'fruits', 'vegetables', 'grains'
+          category: product.category,
           price: product.mrpPerKg,
-          unit: 'kg', // Hardcoded since all are per kg
-          rating: product.rating.average || 0,
-          reviews: product.rating.count || 0,
-          image: product.images[0] || 'https://via.placeholder.com/400' // First image or fallback
+          unit: 'kg',
+          rating: product.rating?.average || 0, // Optional chaining for safety
+          reviews: product.rating?.count || 0, // Optional chaining for safety
+          image: product.images?.[0] || 'https://via.placeholder.com/400' // Check if images exists
         }));
-        setAllProducts(mappedProducts); // Store original data
-        setDisplayedProducts(mappedProducts); // Initial display
+        setAllProducts(mappedProducts);
+        setDisplayedProducts(mappedProducts);
       } catch (err) {
+        console.error('Error fetching products:', err);
         setError('Failed to load products. Please try again later.');
       } finally {
         setLoading(false);

@@ -1,27 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import './FarmerProfile.css';
-import { FaEnvelope, FaPhoneAlt, FaFlag } from 'react-icons/fa';
+import { FaEnvelope, FaPhoneAlt, FaFlag, FaTimes } from 'react-icons/fa';
 import { MdVerifiedUser } from 'react-icons/md';
 import { FiMessageCircle } from 'react-icons/fi';
 import { FaLocationDot } from 'react-icons/fa6';
 import { IoStar, IoLeaf } from 'react-icons/io5';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useParams, Link } from 'react-router-dom'; // Import Link
+import { useParams, Link } from 'react-router-dom';
 import { getFarmerByEmail } from '../api';
 import { BsTelephoneX } from 'react-icons/bs';
-import Image1 from '../../assets/priya-singh.jpg'; // Dummy review images
+import Image1 from '../../assets/priya-singh.jpg';
 import Image2 from '../../assets/rajesh-kumar.jpg';
 
 const FarmerProfile = () => {
   const [farmer, setFarmer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showFssaiIframe, setShowFssaiIframe] = useState(false);
-  const [showOrganicIframe, setShowOrganicIframe] = useState(false);
+  const [showCertificatePopup, setShowCertificatePopup] = useState(null); // New state for popup
   const { getAccessTokenSilently } = useAuth0();
   const { email } = useParams();
 
-  // Dummy reviews data
   const dummyReviews = [
     {
       id: '1',
@@ -59,15 +57,23 @@ const FarmerProfile = () => {
   if (loading) return <div className="farmer-profile-container">Loading...</div>;
   if (error || !farmer) return <div className="farmer-profile-container">{error || 'Farmer not found'}</div>;
 
-  // Mask phone number if showPhoneToUsers is false
   const displayPhone = farmer.showPhoneToUsers
     ? farmer.phone
     : `******${farmer.phone.slice(-4)}`;
 
-  // Map address in one line
   const displayAddress = `${farmer.address.street ? farmer.address.street + ', ' : ''}${
     farmer.address.city ? farmer.address.city + ', ' : ''
   }${farmer.address.state ? farmer.address.state + ' ' : ''}${farmer.address.zipCode || ''}`.trim();
+
+  const openCertificatePopup = (type) => {
+    setShowCertificatePopup(type);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+  };
+
+  const closeCertificatePopup = () => {
+    setShowCertificatePopup(null);
+    document.body.style.overflow = 'auto'; // Restore scrolling
+  };
 
   return (
     <div className="farmer-profile-container">
@@ -119,9 +125,9 @@ const FarmerProfile = () => {
                 <p>FSSAI Certified <br /> Valid until Dec 2025</p>
                 <span
                   className="view-certificate-link"
-                  onClick={() => setShowFssaiIframe(!showFssaiIframe)}
+                  onClick={() => openCertificatePopup('fssai')}
                 >
-                  {showFssaiIframe ? 'Hide Certificate' : 'View Certificate'}
+                  View Certificate
                 </span>
               </div>
             )}
@@ -131,42 +137,14 @@ const FarmerProfile = () => {
                 <p>Organic Farming <br /> Valid until Nov 2025</p>
                 <span
                   className="view-certificate-link"
-                  onClick={() => setShowOrganicIframe(!showOrganicIframe)}
+                  onClick={() => openCertificatePopup('organic')}
                 >
-                  {showOrganicIframe ? 'Hide Certificate' : 'View Certificate'}
+                  View Certificate
                 </span>
               </div>
             )}
           </div>
         </div>
-
-        {/* Iframe Section */}
-        {(showFssaiIframe || showOrganicIframe) && (
-          <div className="certificate-iframe-section">
-            {showFssaiIframe && farmer.certificates.fssai && (
-              <div className="certificate-iframe">
-                <h4>FSSAI Certificate</h4>
-                <iframe
-                  src={`${farmer.certificates.fssai}#view=FitH&toolbar=0&navpanes=0`}
-                  title="FSSAI Certificate"
-                  width="100%"
-                  height="500px"
-                />
-              </div>
-            )}
-            {showOrganicIframe && farmer.certificates.organicFarm && (
-              <div className="certificate-iframe">
-                <h4>Organic Farming Certificate</h4>
-                <iframe
-                  src={`${farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
-                  title="Organic Farming Certificate"
-                  width="100%"
-                  height="500px"
-                />
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {/* About Farmer Section */}
@@ -190,7 +168,7 @@ const FarmerProfile = () => {
                 <div key={product.id} className="product-item-d">
                   <Link to={`/product/${product.id}`}>
                     <img
-                      src={product.images[0] || 'https://via.placeholder.com/150'}
+                      src={product.images[0]}
                       alt={product.name}
                       className="product-image-d"
                     />
@@ -244,6 +222,30 @@ const FarmerProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Certificate Popup */}
+      {showCertificatePopup && (
+        <div className="certificate-popup-overlay">
+          <div className="certificate-popup-container">
+            <div className="certificate-popup-header">
+              <h3>
+                {showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
+              </h3>
+              <button className="close-certificate-popup" onClick={closeCertificatePopup}>
+                <FaTimes />
+              </button>
+            </div>
+            <div className="certificate-popup-content">
+              <iframe
+                src={`${showCertificatePopup === 'fssai' ? farmer.certificates.fssai : farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
+                title={showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
+                width="100%"
+                height="100%"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
-import { FaHome, FaBox, FaShoppingCart, FaComments, FaChartBar, FaUser, FaMedal, FaCog, FaTimes } from 'react-icons/fa';
+import { FaBox, FaShoppingCart, FaComments, FaChartBar, FaUser, FaTimes } from 'react-icons/fa';
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaLeaf } from "react-icons/fa6";
 import { Link, useLocation } from 'react-router-dom';
 import { RiDashboardFill } from "react-icons/ri";
 import { IoLogOutSharp } from "react-icons/io5";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
   const location = useLocation();
   const [activePath, setActivePath] = useState('/farmerpanel/dashboard');
+  const { logout } = useAuth0();
   
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location]);
+
+  const handleLogout = () => {
+    logout({ returnTo: window.location.origin });
+    sessionStorage.removeItem('email');
+    sessionStorage.removeItem('role');
+    setUserRole(null);
+  };
 
   return (
     <>
@@ -78,7 +87,7 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
           <Link to='/'>
           <div className={`da-nav-item ${activePath === '/' ? 'da-active' : ''}`} onClick={toggleSidebar}>
             <span className="da-nav-icon"><IoLogOutSharp /></span>
-            <span className="da-nav-text">Logout</span>
+            <span className="da-nav-text" onClick={handleLogout}>Logout</span>
           </div>
           </Link>
           

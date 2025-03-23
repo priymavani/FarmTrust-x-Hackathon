@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 
 const farmerSchema = new mongoose.Schema({
   _id: { type: String, default: () => new ObjectId().toString() },

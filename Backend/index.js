@@ -495,8 +495,9 @@ io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
   
     socket.on('joinChat', ({ userEmail, farmerEmail }, callback) => {
-      const normalizedUserEmail = userEmail.toLowerCase();
-      const normalizedFarmerEmail = farmerEmail.toLowerCase();
+      const normalizedUserEmail =  String(userEmail ).toLowerCase();
+      const normalizedFarmerEmail = String(farmerEmail ).toLowerCase();
+
       const room = `${normalizedUserEmail}_${normalizedFarmerEmail}`;
       socket.join(room);
       console.log(`Joined room: ${room}`);
@@ -544,8 +545,8 @@ io.on('connection', (socket) => {
   
         console.log('Chat updated:', chat);
   
-        const normalizedUserEmail = userEmail.toLowerCase();
-        const normalizedFarmerEmail = farmerEmail.toLowerCase();
+        const normalizedUserEmail = userEmail;
+        const normalizedFarmerEmail = farmerEmail;
         const room = `${normalizedUserEmail}_${normalizedFarmerEmail}`;
         console.log('Emitting message to room:', room);
         console.log('Message being emitted:', newMessage);

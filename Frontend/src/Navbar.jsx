@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaBell, FaComment, FaBars, FaLeaf, FaSearch } from 'react-icons/fa';
 import './Navbar.css';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getUserByEmail } from './components/api';
 
 const Navbar = () => {
@@ -21,7 +21,6 @@ const Navbar = () => {
     if (!isAuthenticated || !user?.email) return;
     setLoading(true);
     try {
-      console.log("Fetching user role...");
       const token = await getAccessTokenSilently();
       const data = await getUserByEmail(user.email, token);
       sessionStorage.setItem('email', user.email);
@@ -29,7 +28,7 @@ const Navbar = () => {
       setUserRole(data.user.role);
     } catch (err) {
       setError(err.message);
-      setUserRole(sessionStorage.getItem('role') || 'customer'); 
+      setUserRole(sessionStorage.getItem('role') || 'customer');
     } finally {
       setLoading(false);
     }
@@ -40,12 +39,12 @@ const Navbar = () => {
   }, [isAuthenticated, user]);
 
   const handleProfileClick = () => {
-    if (loading) return; 
+    if (loading) return;
     if (userRole === 'farmer') {
-      navigate('/farmer');
+      navigate('/farmerpanel/dashboard');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (userRole === 'customer') {
-      navigate('/products');
+      navigate('/user/profile');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -69,9 +68,11 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       {/* Logo */}
-      <div className="navbar-logo">
-        <FaLeaf className="logo-icon" /> FarmTrust
-      </div>
+      <Link to="/" className='navbar-logo-a'>
+        <div className="navbar-logo" >
+          <FaLeaf className="logo-icon" /> FarmTrust
+        </div>
+      </Link>
 
       {/* Hamburger Menu for Mobile */}
       <div className="hamburger" onClick={toggleDrawer}>
@@ -89,7 +90,7 @@ const Navbar = () => {
         {/* Icons */}
         <div className="navbar-icons">
           <div className="icon-wrapper">
-            <FaBell onClick={handleLogout} /> {/* Changed to logout */}
+            <FaBell onClick={handleLogout} /> 
             <span className="badge">3</span>
           </div>
           <div className="icon-wrapper">

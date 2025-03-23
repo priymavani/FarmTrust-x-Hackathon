@@ -6,10 +6,10 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { FaLocationDot } from 'react-icons/fa6';
 import { IoStar, IoLeaf } from 'react-icons/io5';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useParams, Link } from 'react-router-dom'; // Import Link
+import { useParams, Link, useNavigate } from 'react-router-dom'; // Added useNavigate
 import { getFarmerByEmail } from '../api';
 import { BsTelephoneX } from 'react-icons/bs';
-import Image1 from '../../assets/priya-singh.jpg'; // Dummy review images
+import Image1 from '../../assets/priya-singh.jpg';
 import Image2 from '../../assets/rajesh-kumar.jpg';
 
 const FarmerProfile = () => {
@@ -20,6 +20,7 @@ const FarmerProfile = () => {
   const [showOrganicIframe, setShowOrganicIframe] = useState(false);
   const { getAccessTokenSilently } = useAuth0();
   const { email } = useParams();
+  const navigate = useNavigate(); // Added for navigation
 
   // Dummy reviews data
   const dummyReviews = [
@@ -56,15 +57,18 @@ const FarmerProfile = () => {
     if (email) fetchFarmer();
   }, [email, getAccessTokenSilently]);
 
+  // Handle navigation to UserChat page
+  const handleMessageClick = () => {
+    navigate(`/user/messages?farmerEmail=${farmer.email}`);
+  };
+
   if (loading) return <div className="farmer-profile-container">Loading...</div>;
   if (error || !farmer) return <div className="farmer-profile-container">{error || 'Farmer not found'}</div>;
 
-  // Mask phone number if showPhoneToUsers is false
   const displayPhone = farmer.showPhoneToUsers
     ? farmer.phone
     : `******${farmer.phone.slice(-4)}`;
 
-  // Map address in one line
   const displayAddress = `${farmer.address.street ? farmer.address.street + ', ' : ''}${
     farmer.address.city ? farmer.address.city + ', ' : ''
   }${farmer.address.state ? farmer.address.state + ' ' : ''}${farmer.address.zipCode || ''}`.trim();
@@ -93,7 +97,8 @@ const FarmerProfile = () => {
                 <FaLocationDot /> {displayAddress || 'Address not provided'}
               </p>
               <div className="contact-buttons">
-                <button className="message-btn">
+                {/* Updated Message Button */}
+                <button className="message-btn" onClick={handleMessageClick}>
                   <FiMessageCircle /> Message
                 </button>
                 <button className={`call-btn ${!farmer.showPhoneToUsers ? 'disabled' : ''}`} disabled={!farmer.showPhoneToUsers}>
@@ -140,7 +145,6 @@ const FarmerProfile = () => {
           </div>
         </div>
 
-        {/* Iframe Section */}
         {(showFssaiIframe || showOrganicIframe) && (
           <div className="certificate-iframe-section">
             {showFssaiIframe && farmer.certificates.fssai && (

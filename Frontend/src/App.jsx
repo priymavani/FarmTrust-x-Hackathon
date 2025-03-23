@@ -38,7 +38,7 @@ function AppContent() {
         <Route path="/farmer-application" element={<FarmerApplyForm />} />
       </Routes>
       <Chatbot/>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

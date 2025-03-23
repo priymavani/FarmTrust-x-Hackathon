@@ -88,4 +88,22 @@ export const getAllOrders = async (token) => {
     }
 };
 
+export const updateFarmer = async (email, updatedData, token) => {
+    try {
+        const response = await fetch(`${API_URL}/farmers/${email}`, {
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: updatedData, // FormData, no Content-Type header needed
+        });
+        if (!response.ok) throw new Error('Failed to update farmer');
+        const data = await response.json();
+        return data.farmer;
+    } catch (error) {
+        console.error('Error updating farmer:', error);
+        throw error;
+    }
+};
+
 export default api;

@@ -8,7 +8,7 @@ import FarmerProfile from './components/FarmerProfile/FarmerProfile';
 import Farmer from './components/Farmer';
 import UserDashboard from './UserDashboard';
 import FarmerApplyForm from './components/FarmerApplyForm/FarmerApplyForm';
-import Chatbot from './components/ChatBot/ChatBot';
+import Chatbot from './components/ChatBot/ChatBot.jsx';
 
 
 
@@ -31,7 +31,6 @@ function AppContent() {
         <Route path="/" element={< LandingPage />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/product/:productId" element={<SingleProduct />} />
-        <Route path="/product" element={<SingleProduct />} />
         <Route path="/farmer/:email" element={<FarmerProfile />} />
         <Route path="/farmerpanel/*" element={<Farmer />} />
         <Route path="/user/*" element={<UserDashboard />} />

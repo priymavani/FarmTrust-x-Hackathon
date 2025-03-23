@@ -50,7 +50,7 @@ const UserDashboard = () => {
       {/* Fixed Sidebar */}
       <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <div className="profile-pic-section">
-          <img src={profilePic} alt="Profile" className="profile-pic" />
+          <img src={profilePic} alt="Profile" className="profile-pic001" />
         </div>
         <ul className="sidebar-menu">
           <li 

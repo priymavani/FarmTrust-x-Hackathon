@@ -4,6 +4,7 @@ import './Navbar.css';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getUserByEmail } from './components/api';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -12,6 +13,7 @@ const Navbar = () => {
   const [error, setError] = useState(null);
   const { loginWithPopup, logout, isAuthenticated, user, getAccessTokenSilently, isLoading } = useAuth0();
   const navigate = useNavigate();
+  const { i18n } = useTranslation(); 
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -65,6 +67,10 @@ const Navbar = () => {
     setUserRole(null);
   };
 
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <nav className="navbar">
       {/* Logo */}
@@ -81,6 +87,17 @@ const Navbar = () => {
 
       {/* Navbar Items */}
       <div className={`navbar-items ${isDrawerOpen ? 'open' : ''}`}>
+        <div className="language-switcher">
+          <select
+            value={i18n.language} // Current language from i18n
+            onChange={(e) => changeLanguage(e.target.value)} // Update language on change
+            className="language-select"
+          >
+            <option value="en">English</option>
+            <option value="hi">हिन्दी</option>
+            <option value="gu">ગુજરાતી</option>
+          </select>
+        </div>
         {/* Search Bar */}
         <div className="navbar-search">
           <input type="text" placeholder="Search products..." />
@@ -90,7 +107,7 @@ const Navbar = () => {
         {/* Icons */}
         <div className="navbar-icons">
           <div className="icon-wrapper">
-            <FaBell onClick={handleLogout} /> 
+            <FaBell onClick={handleLogout} />
             <span className="badge">3</span>
           </div>
           <div className="icon-wrapper">

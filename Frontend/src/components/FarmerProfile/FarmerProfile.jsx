@@ -6,7 +6,7 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { FaLocationDot } from 'react-icons/fa6';
 import { IoStar, IoLeaf } from 'react-icons/io5';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom'; // Added useNavigate
 import { getFarmerByEmail } from '../api';
 import { BsTelephoneX } from 'react-icons/bs';
 import Image1 from '../../assets/priya-singh.jpg';
@@ -19,6 +19,7 @@ const FarmerProfile = () => {
   const [showCertificatePopup, setShowCertificatePopup] = useState(null); // New state for popup
   const { getAccessTokenSilently } = useAuth0();
   const { email } = useParams();
+  const navigate = useNavigate(); // Added for navigation
 
   const dummyReviews = [
     {
@@ -53,6 +54,11 @@ const FarmerProfile = () => {
     };
     if (email) fetchFarmer();
   }, [email, getAccessTokenSilently]);
+
+  // Handle navigation to UserChat page
+  const handleMessageClick = () => {
+    navigate(`/user/messages?farmerEmail=${farmer.email}`);
+  };
 
   if (loading) return <div className="farmer-profile-container">Loading...</div>;
   if (error || !farmer) return <div className="farmer-profile-container">{error || 'Farmer not found'}</div>;
@@ -99,7 +105,8 @@ const FarmerProfile = () => {
                 <FaLocationDot /> {displayAddress || 'Address not provided'}
               </p>
               <div className="contact-buttons">
-                <button className="message-btn">
+                {/* Updated Message Button */}
+                <button className="message-btn" onClick={handleMessageClick}>
                   <FiMessageCircle /> Message
                 </button>
                 <button className={`call-btn ${!farmer.showPhoneToUsers ? 'disabled' : ''}`} disabled={!farmer.showPhoneToUsers}>
@@ -145,6 +152,33 @@ const FarmerProfile = () => {
             )}
           </div>
         </div>
+
+        {(showFssaiIframe || showOrganicIframe) && (
+          <div className="certificate-iframe-section">
+            {showFssaiIframe && farmer.certificates.fssai && (
+              <div className="certificate-iframe">
+                <h4>FSSAI Certificate</h4>
+                <iframe
+                  src={`${farmer.certificates.fssai}#view=FitH&toolbar=0&navpanes=0`}
+                  title="FSSAI Certificate"
+                  width="100%"
+                  height="500px"
+                />
+              </div>
+            )}
+            {showOrganicIframe && farmer.certificates.organicFarm && (
+              <div className="certificate-iframe">
+                <h4>Organic Farming Certificate</h4>
+                <iframe
+                  src={`${farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
+                  title="Organic Farming Certificate"
+                  width="100%"
+                  height="500px"
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* About Farmer Section */}

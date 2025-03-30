@@ -226,7 +226,7 @@ const FarmerChat = () => {
     <div className="customer-support-container">
       <div className="left-panel">
         <div className="search-container">
-          <BsSearch className="search-icon" />
+          <BsSearch className="search-icon3" />
           <input type="text" placeholder="Search messages..." className="search-input" />
         </div>
 

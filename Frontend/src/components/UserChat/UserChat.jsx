@@ -277,7 +277,7 @@ const UserChat = () => {
     <div className="user-chat-container">
       <div className="left-panel">
         <div className="search-container">
-          <BsSearch className="search-icon" />
+          <BsSearch className="search-icon2" />
           <input type="text" placeholder="Search chats..." className="search-input" />
         </div>
         <div className="tabs-container">

@@ -7,7 +7,6 @@ import '../components/Dashboard/Dashboard.css';
 import ProfileFarmer from './ProfileFarmer/ProfileFarmer';
 import FarmerOrders from './FarmerOrders/FarmerOrders';
 import FarmerProducts from './FarmerProducts/FarmerProducts';
-import FarmerChat from './FarmerChat/FarmerChat';
 const Farmer = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -39,7 +38,6 @@ const Farmer = () => {
           <Route path="/profile" element={<ProfileFarmer />} />
           <Route path="/orders" element={<FarmerOrders />} />
           <Route path="/products" element={<FarmerProducts />} />
-          <Route path="/messages" element={<FarmerChat />} />
         </Routes>
       </div>
     </div>

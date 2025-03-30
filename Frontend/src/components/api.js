@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Base URL for your backend API
-const API_URL = 'https://farmtrust-x-hackathon.onrender.com'; // Adjust this if your backend runs on a different port or domain
+const API_URL = 'http://localhost:5000'; // Adjust this if your backend runs on a different port or domain
 
 // Axios instance with default configuration
 const api = axios.create({

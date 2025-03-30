@@ -8,7 +8,7 @@ import UserProfile from '../src/components/UserProfile/UserProfile';
 import './UserDashboard.css';
 import UserOrders from './components/UserOrders/UserOrders';
 import UserCart from './components/UserCart/UserCart';
-import UserChat from './components/UserChat/UserChat';
+// import UserChat from './UserChat/UserChat';
 import { IoMdChatbubbles } from "react-icons/io";
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -90,7 +90,7 @@ const UserDashboard = () => {
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/orders" element={<UserOrders />} />
           <Route path="/cart" element={<UserCart />} />
-          <Route path="/messages" element={<UserChat />} />
+          {/* <Route path="/messages" element={<UserChat />} /> */}
         </Routes>
       </div>
     </div>

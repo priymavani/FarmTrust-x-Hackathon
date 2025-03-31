@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 const LandingPage = () => {
   const { loginWithPopup, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
 
   const renderStars = (rating, total = 5) => {
     const stars = [];
@@ -76,7 +76,9 @@ const LandingPage = () => {
               >
                 {t('apply_for_farmer')}
               </button>
-              <button className="explore-button-d6">{t('explore_products')}</button>
+              <Link to="/products">
+                <button className="explore-button-d6">{t('explore_products')}</button>
+              </Link>
             </div>
           </div>
           <div className="banner-image-d6">

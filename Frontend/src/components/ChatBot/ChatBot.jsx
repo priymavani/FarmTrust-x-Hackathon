@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import './Chatbot.css';
+import './ChatBot.css';
 import { FaLeaf } from 'react-icons/fa'; // Import leaf icon from react-icons
 import farmLogo from '../../assets/FarmTrust-logo.jpg';
 

@@ -20,7 +20,7 @@ const PORT = 5000;
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://farmtrust.netlify.app'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
@@ -50,7 +50,7 @@ cloudinary.config({
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://farmtrust.netlify.app'],
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true,
 }));
@@ -630,6 +630,17 @@ app.get('/api/farmer/:email', async (req, res) => {
   } catch (error) {
     console.error('Error fetching farmer:', error);
     res.status(500).json({ error: 'Failed to fetch farmer' });
+  }
+});
+
+app.post('/chat', async (req, res) => {
+  try {
+    const newChat = new Chat(req.body);
+    await newChat.save();
+    res.status(201).json(newChat);
+  } catch (error) {
+    console.error('Error creating chat:', error);
+    res.status(500).json({ error: 'Failed to create chat' });
   }
 });
 

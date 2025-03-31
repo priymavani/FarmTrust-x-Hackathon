@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import './SingleProduct.css';
 import { getProductById, getAllProducts, getUserByEmail, updateUser } from '../api';
 import { FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
+import { MdVerifiedUser } from "react-icons/md";
 
 const SingleProduct = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -228,7 +229,7 @@ const SingleProduct = () => {
               <div className="p-seller-details">
                 <p className="p-seller-name">
                   {product.farmer.name}
-                  {product.farmer.isVerified && <span className="p-verified-icon">✓</span>}
+                  {product.farmer.isVerified && <span><MdVerifiedUser color='green' /></span>}
                 </p>
                 {product.farmer.isVerified && (
                   <p className="p-seller-title">Trusted By FarmTrust</p>

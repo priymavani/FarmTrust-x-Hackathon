@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import './Chatbot.css';
+import './ChatBot.css';
 import { FaLeaf } from 'react-icons/fa'; // Import leaf icon from react-icons
-import farmLogo from '../../assets/FarmTrust-logo.jpg';
+import farmLogo from '../../assets/FarmTrust-Logo.jpg';
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +49,7 @@ function Chatbot() {
 
     try {
       // Updated to use your backend endpoint with proper error handling
-      const response = await fetch('http://localhost:5000/chatbot/query', {
+      const response = await fetch('https://farmtrust-x-hackathon.onrender.com/chatbot/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

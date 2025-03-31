@@ -4,7 +4,7 @@ import { FaCircle } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import userImage from '../../assets/rajesh.jpg';
-import './UserChat.css';
+import './UserChat.css'; // Ensure the CSS file name is correct
 
 // Initialize Socket.IO connection
 const socket = io('http://localhost:5000', {
@@ -25,7 +25,7 @@ const UserChat = () => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
-  const currentUserEmail = sessionStorage.getItem('email');
+  const currentUser_Email = sessionStorage.getItem('email'); // Fixed variable name
   const userType = sessionStorage.getItem('role');
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -33,11 +33,11 @@ const UserChat = () => {
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!currentUserEmail || !userType) {
-      console.log('User not logged in, redirecting to /login');
+    if (!currentUser_Email || !userType) {
+      console.log('User  not logged in, redirecting to /login');
       navigate('/login');
     }
-  }, [currentUserEmail, userType, navigate]);
+  }, [currentUser_Email, userType, navigate]);
 
   // Socket.IO connection handling
   useEffect(() => {
@@ -52,162 +52,120 @@ const UserChat = () => {
       console.log('Socket.IO disconnected:', reason);
     });
 
+    // Handle incoming messages
+    socket.on('receiveMessage', (message) => {
+      if (selectedChat && 
+          (message.sender.email === selectedChat.userEmail || message.sender.email === selectedChat.farmerEmail)) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
+    });
+
     return () => {
       socket.off('connect');
       socket.off('connect_error');
       socket.off('disconnect');
+      socket.off('receiveMessage');
     };
-  }, []);
+  }, [selectedChat]);
 
   // Fetch all chats for the user
   const fetchChats = async () => {
     try {
       const endpoint =
         userType === 'customer'
-          ? `http://localhost:5000/chat/conversations/customer/${currentUserEmail}`
-          : `http://localhost:5000/chat/conversations/farmer/${currentUserEmail}`;
+          ? `http://localhost:5000/chat/conversations/customer/${currentUser_Email}`
+          : `http://localhost:5000/chat/conversations/farmer/${currentUser_Email}`;
       const response = await fetch(endpoint);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log('Fetched chats:', data); // Debug log to inspect data
       setChats(data);
-
-      // Join all chat rooms
-      data.forEach((chat) => {
-        socket.emit('joinChat', { chatId: chat._id, userEmail: currentUserEmail.toLowerCase() });
-      });
 
       // Handle farmerEmail from query
       if (farmerEmailFromQuery) {
         const chatWithFarmer = data.find(
-          (chat) => chat.farmerEmail.toLowerCase() === farmerEmailFromQuery.toLowerCase()
+          (chat) =>
+            chat.participants?.farmerEmail &&
+            chat.participants.farmerEmail.toLowerCase() === farmerEmailFromQuery.toLowerCase()
         );
         if (chatWithFarmer) {
           selectChat(chatWithFarmer);
         } else {
-          // Start a new chat if none exists
-          const farmer = await fetchFarmerDetails(farmerEmailFromQuery);
-          if (farmer && farmer.email) {
-            const newChat = {
-              _id: null, // Will be set by backend
-              participants: {
-                userEmail: currentUserEmail,
-                farmerEmail: farmerEmailFromQuery,
-              },
-              messages: [],
-              lastMessageAt: new Date(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              farmerName: farmer.name,
-            };
-            setChats((prevChats) => {
-              if (
-                prevChats.some(
-                  (chat) => chat.farmerEmail.toLowerCase() === farmerEmailFromQuery.toLowerCase()
-                )
-              ) {
-                return prevChats;
-              }
-              return [newChat, ...prevChats];
-            });
-            setSelectedChat({
-              userEmail: currentUserEmail,
+          // If no existing chat, create a new chat
+          const newChat = {
+            participants: {
+              userEmail: currentUser_Email,
               farmerEmail: farmerEmailFromQuery,
-              name: farmer.name,
-            });
-            // Join the new chat room (chatId will be set after creation)
-            socket.emit('joinChat', {
-              chatId: null, // Backend will assign this
-              userEmail: currentUserEmail.toLowerCase(),
-              // farmerEmail:farmerEmailFromQuery.toLowerCase(),
-            });
-          } else {
-            setError('Farmer not found. Please try another farmer.');
-            navigate('/user/messages', { replace: true });
-          }
+            },
+            messages: [],
+          };
+          await createNewChat(newChat);
         }
       }
     } catch (error) {
       console.error('Error fetching chats:', error);
-      setError('Failed to load chats. Please try again later.');
+      setError(error.message || 'Failed to load chats. Please try again later.');
+    }
+  };
+
+  // Create a new chat
+  const createNewChat = async (newChat) => {
+    try {
+      const response = await fetch('http://localhost:5000/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newChat),
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const createdChat = await response.json();
+      console.log('New chat created:', createdChat);
+      setChats((prevChats) => [...prevChats, createdChat]);
+      selectChat(createdChat); // Automatically select the new chat
+    } catch (error) {
+      console.error('Error creating new chat:', error);
+      setError('Failed to start a new chat. Please try again later.');
     }
   };
 
   useEffect(() => {
-    if (!currentUserEmail || !userType) return;
+    if (!currentUser_Email || !userType) return;
     fetchChats();
-  }, [currentUserEmail, userType, farmerEmailFromQuery]);
-
-  // Fetch farmer details
-  const fetchFarmerDetails = async (farmerEmail) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/farmer/${farmerEmail}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching farmer details:', error);
-      return null;
-    }
-  };
+  }, [currentUser_Email, userType, farmerEmailFromQuery]);
 
   // Fetch messages for selected chat
-  useEffect(() => {
-    if (!selectedChat) return;
+  const fetchMessages = async (chat) => {
+    try {
+      const response = await fetch(`http://localhost:5000/chat/history?userEmail=${chat.participants?.userEmail}&farmerEmail=${chat.participants?.farmerEmail}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      setError('Failed to load chat history.');
+    }
+  };
 
-    const fetchMessages = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/chat/history/${selectedChat.userEmail}/${selectedChat.farmerEmail}`
-        );
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        setMessages(data.messages || []);
-        if (data._id) {
-          setSelectedChat((prev) => ({ ...prev, _id: data._id }));
-          socket.emit('joinChat', { chatId: data._id, userEmail: currentUserEmail.toLowerCase() });
-        }
-      } catch (error) {
-        console.error('Error fetching messages:', error);
-        setError('Failed to load messages. Please try again.');
-      }
-    };
+  // Select a chat
+  const selectChat = (chat) => {
+    const userEmail = chat.participants?.userEmail?.toLowerCase() || '';
+    const farmerEmail = chat.participants?.farmerEmail?.toLowerCase() || '';
 
-    fetchMessages();
-  }, [selectedChat]);
-
-  // Handle incoming messages
-  useEffect(() => {
-    socket.on('receiveMessage', (message) => {
-      if (!selectedChat || !selectedChat._id) return;
-      if (
-        (message.sender.type === 'customer' &&
-          message.sender.email.toLowerCase() === selectedChat.userEmail.toLowerCase() &&
-          message.receiverEmail.toLowerCase() === selectedChat.farmerEmail.toLowerCase()) ||
-        (message.sender.type === 'farmer' &&
-          message.sender.email.toLowerCase() === selectedChat.farmerEmail.toLowerCase() &&
-          message.receiverEmail.toLowerCase() === selectedChat.userEmail.toLowerCase())
-      ) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-        setChats((prevChats) =>
-          prevChats
-            .map((chat) =>
-              chat._id === selectedChat._id
-                ? { ...chat, lastMessageAt: new Date(), lastMessage: message }
-                : chat
-            )
-            .sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt))
-        );
-      }
+    setSelectedChat({
+      userEmail,
+      farmerEmail,
+      name: userType === 'customer' ? chat.farmerName : chat.userName,
     });
+    setError(null);
+    
+    // Update the URL with the farmer's email
+    navigate(`/user/messages?farmerEmail=${farmerEmail}`, { replace: true });
 
-    return () => {
-      socket.off('receiveMessage');
-    };
-  }, [selectedChat]);
-
-  // Auto-scroll to latest message
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    // Fetch messages for the selected chat
+    fetchMessages(chat);
+  };
 
   // Send a message
   const sendMessage = () => {
@@ -215,51 +173,26 @@ const UserChat = () => {
 
     const newMessage = {
       sender: {
-        type: userType,
-        email: currentUserEmail,
+        type: userType === 'customer' ? 'customer' : 'farmer',
+        email: currentUser_Email,
       },
       content: message,
-      isRead: false,
       createdAt: new Date(),
+      isRead: false,
     };
 
-    const messageData = {
-      chatId: selectedChat._id || null, // Null for new chats
-      senderEmail: currentUserEmail,
-      senderType: userType,
-      content: message,
+    // Emit the message to the server
+    socket.emit('sendMessage', {
+      senderType: userType === 'customer' ? 'customer' : 'farmer',
+      senderEmail: currentUser_Email,
+      receiverType: userType === 'customer' ? 'farmer' : 'customer',
       receiverEmail: userType === 'customer' ? selectedChat.farmerEmail : selectedChat.userEmail,
-    };
-
-    socket.emit('sendMessage', messageData, (response) => {
-      if (response && response.error) {
-        setError(`Failed to send message: ${response.details}`);
-      } else if (response && response.chatId) {
-        setSelectedChat((prev) => ({ ...prev, _id: response.chatId }));
-      }
+      content: message,
     });
 
+    // Update local messages state
     setMessages((prevMessages) => [...prevMessages, newMessage]);
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.userEmail === selectedChat.userEmail && chat.farmerEmail === selectedChat.farmerEmail
-          ? { ...chat, lastMessageAt: new Date(), lastMessage: newMessage }
-          : chat
-      )
-    );
     setMessage('');
-  };
-
-  // Select a chat
-  const selectChat = (chat) => {
-    setSelectedChat({
-      _id: chat._id,
-      userEmail: chat.userEmail,
-      farmerEmail: chat.farmerEmail,
-      name: userType === 'customer' ? chat.farmerName : chat.userName,
-    });
-    setError(null);
-    navigate(`/user/messages?farmerEmail=${chat.farmerEmail}`, { replace: true });
   };
 
   // Date and time formatting
@@ -271,7 +204,7 @@ const UserChat = () => {
     return new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   };
 
-  if (!currentUserEmail || !userType) return null;
+  if (!currentUser_Email || !userType) return null;
 
   return (
     <div className="user-chat-container">
@@ -296,34 +229,40 @@ const UserChat = () => {
         </div>
         <div className="conversations-list">
           {error && <div className="error-message">{error}</div>}
-          {chats.length === 0 && farmerEmailFromQuery ? (
-            <div className="no-chats">Starting a new chat...</div>
-          ) : chats.length === 0 ? (
+          {chats.length === 0 ? (
             <div className="no-chats">No chats yet. Start a conversation!</div>
           ) : (
-            chats.map((chat) => (
-              <div
-                key={`${chat.userEmail}-${chat.farmerEmail}`}
-                className={`conversation-item ${
-                  selectedChat?.userEmail === chat.userEmail && selectedChat?.farmerEmail === chat.farmerEmail
-                    ? 'selected'
-                    : ''
-                }`}
-                onClick={() => selectChat(chat)}
-              >
-                <div className="avatar">
-                  <img src={userImage} alt={userType === 'customer' ? chat.farmerName : chat.userName} />
-                </div>
-                <div className="conversation-details">
-                  <div className="conversation-header">
-                    <span className="user-name">{userType === 'customer' ? chat.farmerName : chat.userName}</span>
-                    <span className="message-time">{formatTime(chat.lastMessageAt)}</span>
+            chats.map((chat) => {
+              const userEmail = chat.participants?.userEmail;
+              const farmerEmail = chat.participants?.farmerEmail;
+
+              return (
+                <div
+                  key={`${userEmail}-${farmerEmail}`} // Use a combination of emails as the key
+                  className={`conversation-item ${
+                    selectedChat?.userEmail === userEmail &&
+                    selectedChat?.farmerEmail === farmerEmail
+                      ? 'selected'
+                      : ''
+                  }`}
+                  onClick={() => selectChat(chat)}
+                >
+                  <div className="avatar">
+                    <img src={userImage} alt={userType === 'customer' ? chat.farmerName : chat.userName} />
                   </div>
-                  <div className="message-preview">{chat.lastMessage?.content || 'No messages yet'}</div>
-                  <div className="message-date">{formatDate(chat.lastMessageAt)}</div>
+                  <div className="conversation-details">
+                    <div className="conversation-header">
+                      <span className="user-name">{userType === 'customer' ? chat.farmerEmail : chat.userEmail}</span>
+                      <span className="message-time">{formatTime(chat.lastMessageAt)}</span>
+                    </div>
+                    <div className="message-preview">
+                      {chat.messages?.length > 0 ? chat.messages[chat.messages.length - 1].content : 'No messages yet'}
+                    </div>
+                    <div className="message-date">{formatDate(chat.lastMessageAt)}</div>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>
@@ -347,7 +286,8 @@ const UserChat = () => {
                 {formatDate(
                   chats.find(
                     (chat) =>
-                      chat.userEmail === selectedChat.userEmail && chat.farmerEmail === selectedChat.farmerEmail
+                      chat.participants?.userEmail === selectedChat.userEmail &&
+                      chat.participants?.farmerEmail === selectedChat.farmerEmail
                   )?.createdAt || new Date()
                 )}
               </div>
@@ -365,7 +305,7 @@ const UserChat = () => {
                     )}
                     <div
                       className={`message ${
-                        message.sender.email === currentUserEmail ? 'sent-message' : 'received-message'
+                        message.sender.email === currentUser_Email ? 'sent-message' : 'received-message'
                       }`}
                     >
                       <div className="message-content">{message.content}</div>

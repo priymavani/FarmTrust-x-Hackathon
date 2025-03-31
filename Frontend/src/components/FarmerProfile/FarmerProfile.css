@@ -465,3 +465,38 @@
   cursor: not-allowed;
   color: #666;
 }
+
+.certificate-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.certificate-popup-container {
+  background: white;
+  width: 80%;
+  max-width: 800px;
+  height: 80vh;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.certificate-popup-header {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.certificate-popup-content {
+  width: 100%;
+  height: calc(100% - 60px); /* Adjust based on header height */
+}

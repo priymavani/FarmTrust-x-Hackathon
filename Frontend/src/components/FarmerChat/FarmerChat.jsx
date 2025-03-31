@@ -24,7 +24,7 @@ const FarmerChat = () => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
-  const currentUserEmail = sessionStorage.getItem('email');
+  const currentUser_Email = sessionStorage.getItem('email');
   const userType = sessionStorage.getItem('role');
 
   const location = useLocation();
@@ -32,11 +32,11 @@ const FarmerChat = () => {
   const userEmailFromQuery = queryParams.get('userEmail');
 
   useEffect(() => {
-    if (!currentUserEmail || !userType || userType !== 'farmer') {
-      console.log('User not logged in or not a farmer, redirecting to /login');
+    if (!currentUser_Email || !userType || userType !== 'farmer') {
+      console.log('User  not logged in or not a farmer, redirecting to /login');
       navigate('/login');
     }
-  }, [currentUserEmail, userType, navigate]);
+  }, [currentUser_Email, userType, navigate]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -59,7 +59,7 @@ const FarmerChat = () => {
 
   const fetchChats = async () => {
     try {
-      const endpoint = `http://localhost:5000/chat/conversations/farmer/${currentUserEmail}`;
+      const endpoint = `http://localhost:5000/chat/conversations/farmer/${currentUser_Email}`;
       console.log('Fetching chats from:', endpoint);
       const response = await fetch(endpoint);
       if (!response.ok) {
@@ -71,19 +71,19 @@ const FarmerChat = () => {
 
       // Join all chat rooms for this farmer
       data.forEach(chat => {
-        const normalizedUserEmail = chat.userEmail.toLowerCase();
+        const normalizedUser_Email = chat.userEmail.toLowerCase();
         const normalizedFarmerEmail = chat.farmerEmail.toLowerCase();
-        socket.emit('joinChat', { userEmail: normalizedUserEmail, farmerEmail: normalizedFarmerEmail }, (response) => {
-          console.log(`Joined chat room for ${normalizedUserEmail}_${normalizedFarmerEmail}:`, response || 'No response from server');
+        socket.emit('joinChat', { userEmail: normalizedUser_Email, farmerEmail: normalizedFarmerEmail }, (response) => {
+          console.log(`Joined chat room for ${normalizedUser_Email}_${normalizedFarmerEmail}:`, response || 'No response from server');
         });
       });
 
       if (userEmailFromQuery) {
-        console.log('User email from query:', userEmailFromQuery);
-        const chatWithUser = data.find(chat => chat.userEmail.toLowerCase() === userEmailFromQuery.toLowerCase());
-        if (chatWithUser) {
-          console.log('Found existing chat:', chatWithUser);
-          selectChat(chatWithUser);
+        console.log('User  email from query:', userEmailFromQuery);
+        const chatWithUser  = data.find(chat => chat.userEmail.toLowerCase() === userEmailFromQuery.toLowerCase());
+        if (chatWithUser ) {
+          console.log('Found existing chat:', chatWithUser );
+          selectChat(chatWithUser );
         } else {
           console.log('No existing chat found with user:', userEmailFromQuery);
           setError('No chat found with this user. Please start a new conversation.');
@@ -97,9 +97,9 @@ const FarmerChat = () => {
   };
 
   useEffect(() => {
-    if (!currentUserEmail || userType !== 'farmer') return;
+    if (!currentUser_Email || userType !== 'farmer') return;
     fetchChats();
-  }, [currentUserEmail, userType, userEmailFromQuery, navigate]);
+  }, [currentUser_Email, userType, userEmailFromQuery, navigate]);
 
   useEffect(() => {
     if (!selectedChat) return;
@@ -127,7 +127,6 @@ const FarmerChat = () => {
   useEffect(() => {
     socket.on('receiveMessage', (message) => {
       console.log('Received message in FarmerChat:', message);
-      console.log('Current selectedChat:', selectedChat);
       if (!selectedChat) {
         console.log('No selected chat, ignoring message');
         return;
@@ -153,7 +152,6 @@ const FarmerChat = () => {
         });
       } else {
         console.log('Message does not match selected chat room, ignoring');
-        console.log('Expected room:', room, 'Message room:', messageRoom);
       }
     });
 
@@ -173,23 +171,34 @@ const FarmerChat = () => {
     }
 
     const newMessage = {
-      senderType: userType,
-      senderEmail: currentUserEmail,
-      receiverType: userType === 'farmer' ? 'customer' : 'farmer',
-      receiverEmail: userType === 'farmer' ? selectedChat.userEmail : selectedChat.farmerEmail,
+      sender: {
+        type: 'farmer', // Set sender type to 'farmer'
+        email: currentUser_Email,
+      },
       content: message,
+      createdAt: new Date(),
+      isRead: false,
     };
 
-    console.log('Sending message:', newMessage);
-    socket.emit('sendMessage', newMessage, (response) => {
+    // Emit the message to the server
+    socket.emit('sendMessage', {
+      senderType: 'farmer',
+      senderEmail: currentUser_Email,
+      receiverType: 'customer',
+      receiverEmail: selectedChat.userEmail, // Assuming the user is the customer
+      content: message,
+    }, (response) => {
       if (response && response.error) {
-        console.error('Error sending message:', response.error, 'Details:', response.details);
+        console.error('Error sending message:', response.error);
         setError(`Failed to send message: ${response.details}`);
       } else {
         console.log('Message sent successfully:', response);
-        fetchChats();
+        // Update local messages state
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
     });
+
+    // Clear the input field
     setMessage('');
   };
 
@@ -218,7 +227,7 @@ const FarmerChat = () => {
     });
   };
 
-  if (!currentUserEmail || userType !== 'farmer') {
+  if (!currentUser_Email || userType !== 'farmer') {
     return null;
   }
 
@@ -308,7 +317,7 @@ const FarmerChat = () => {
                     {(index === 0 || new Date(message.createdAt).toDateString() !== new Date(messages[index - 1].createdAt).toDateString()) && (
                       <div className="date-separator">{formatDate(message.createdAt)}</div>
                     )}
-                    <div className={`message ${message.sender.email === currentUserEmail ? 'admin-message' : 'customer-message'}`}>
+                    <div className={`message ${message.sender.email === currentUser_Email ? 'admin-message' : 'customer-message'}`}>
                       <div className="message-content">{message.content}</div>
                       <div className="message-time">{formatTime(message.createdAt)}</div>
                     </div>

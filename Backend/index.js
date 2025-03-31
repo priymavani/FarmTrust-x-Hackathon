@@ -633,6 +633,17 @@ app.get('/api/farmer/:email', async (req, res) => {
   }
 });
 
+app.post('/chat', async (req, res) => {
+  try {
+    const newChat = new Chat(req.body);
+    await newChat.save();
+    res.status(201).json(newChat);
+  } catch (error) {
+    console.error('Error creating chat:', error);
+    res.status(500).json({ error: 'Failed to create chat' });
+  }
+});
+
 // Start Server
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

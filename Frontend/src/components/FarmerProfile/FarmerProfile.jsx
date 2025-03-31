@@ -6,7 +6,7 @@ import { FiMessageCircle } from 'react-icons/fi';
 import { FaLocationDot } from 'react-icons/fa6';
 import { IoStar, IoLeaf } from 'react-icons/io5';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getFarmerByEmail } from '../api';
 import { BsTelephoneX } from 'react-icons/bs';
 import Image1 from '../../assets/priya-singh.jpg';
@@ -16,9 +16,10 @@ const FarmerProfile = () => {
   const [farmer, setFarmer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showCertificatePopup, setShowCertificatePopup] = useState(null); // New state for popup
+  const [showCertificatePopup, setShowCertificatePopup] = useState(null);
   const { getAccessTokenSilently } = useAuth0();
   const { email } = useParams();
+  const navigate = useNavigate();
 
   const dummyReviews = [
     {
@@ -54,6 +55,13 @@ const FarmerProfile = () => {
     if (email) fetchFarmer();
   }, [email, getAccessTokenSilently]);
 
+  const handleMessageClick = () => {
+    if (farmer && farmer.email) {
+      const lowercaseFarmerEmail = farmer.email.toLowerCase();
+      navigate(`/user/messages?farmerEmail=${lowercaseFarmerEmail}`);
+    }
+  };
+
   if (loading) return <div className="farmer-profile-container">Loading...</div>;
   if (error || !farmer) return <div className="farmer-profile-container">{error || 'Farmer not found'}</div>;
 
@@ -67,12 +75,12 @@ const FarmerProfile = () => {
 
   const openCertificatePopup = (type) => {
     setShowCertificatePopup(type);
-    document.body.style.overflow = 'hidden'; // Prevent scrolling
+    document.body.style.overflow = 'hidden';
   };
 
   const closeCertificatePopup = () => {
     setShowCertificatePopup(null);
-    document.body.style.overflow = 'auto'; // Restore scrolling
+    document.body.style.overflow = 'auto';
   };
 
   return (
@@ -99,7 +107,7 @@ const FarmerProfile = () => {
                 <FaLocationDot /> {displayAddress || 'Address not provided'}
               </p>
               <div className="contact-buttons">
-                <button className="message-btn">
+                <button className="message-btn" onClick={handleMessageClick}>
                   <FiMessageCircle /> Message
                 </button>
                 <button className={`call-btn ${!farmer.showPhoneToUsers ? 'disabled' : ''}`} disabled={!farmer.showPhoneToUsers}>
@@ -237,10 +245,11 @@ const FarmerProfile = () => {
             </div>
             <div className="certificate-popup-content">
               <iframe
-                src={`${showCertificatePopup === 'fssai' ? farmer.certificates.fssai : farmer.certificates.organicFarm}#view=FitH&toolbar=0&navpanes=0`}
+                src={showCertificatePopup === 'fssai' ? farmer.certificates.fssai : farmer.certificates.organicFarm}
                 title={showCertificatePopup === 'fssai' ? 'FSSAI Certificate' : 'Organic Certificate'}
                 width="100%"
                 height="100%"
+                style={{ border: 'none' }}
               />
             </div>
           </div>

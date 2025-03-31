@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './ChatBot.css';
 import { FaLeaf } from 'react-icons/fa'; // Import leaf icon from react-icons
-import farmLogo from '../../assets/FarmTrust-logo.jpg';
+import farmLogo from '../../assets/FarmTrust-Logo.jpg';
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);

@@ -6,7 +6,7 @@ import io from 'socket.io-client';
 import userImage from '../../assets/rajesh.jpg';
 import './FarmerChat.css';
 
-const socket = io('http://localhost:5000', {
+const socket = io('https://farmtrust-x-hackathon.onrender.com', {
   transports: ['websocket', 'polling'],
   reconnection: true,
   reconnectionAttempts: 5,
@@ -21,7 +21,7 @@ const FarmerChat = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const navigate = useNavigate();
 
   const currentUser_Email = sessionStorage.getItem('email');
@@ -59,7 +59,7 @@ const FarmerChat = () => {
 
   const fetchChats = async () => {
     try {
-      const endpoint = `http://localhost:5000/chat/conversations/farmer/${currentUser_Email}`;
+      const endpoint = `https://farmtrust-x-hackathon.onrender.com/chat/conversations/farmer/${currentUser_Email}`;
       console.log('Fetching chats from:', endpoint);
       const response = await fetch(endpoint);
       if (!response.ok) {
@@ -108,7 +108,7 @@ const FarmerChat = () => {
 
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/chat/history?userEmail=${userEmail}&farmerEmail=${farmerEmail}`);
+        const response = await fetch(`https://farmtrust-x-hackathon.onrender.com/chat/history?userEmail=${userEmail}&farmerEmail=${farmerEmail}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -127,31 +127,43 @@ const FarmerChat = () => {
   useEffect(() => {
     socket.on('receiveMessage', (message) => {
       console.log('Received message in FarmerChat:', message);
-      if (!selectedChat) {
-        console.log('No selected chat, ignoring message');
-        return;
-      }
-      const room = `${selectedChat.userEmail.toLowerCase()}_${selectedChat.farmerEmail.toLowerCase()}`;
-      const messageRoom = `${message.sender.type === 'customer' ? message.sender.email.toLowerCase() : message.receiverEmail.toLowerCase()}_${message.sender.type === 'farmer' ? message.sender.email.toLowerCase() : message.receiverEmail.toLowerCase()}`;
-      if (room === messageRoom) {
-        console.log('Message matches selected chat room, adding to messages');
-        setMessages((prevMessages) => [...prevMessages, message]);
-        setChats(prevChats => {
-          const updatedChats = prevChats.map(chat => {
-            if (chat.userEmail.toLowerCase() === selectedChat.userEmail.toLowerCase() && 
-                chat.farmerEmail.toLowerCase() === selectedChat.farmerEmail.toLowerCase()) {
-              return {
-                ...chat,
-                lastMessage: message,
-                lastMessageAt: new Date(),
-              };
-            }
-            return chat;
-          });
-          return updatedChats.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
+      const userEmailForRoom = message.sender.type === 'customer' ? message.sender.email : message.receiverEmail;
+      const farmerEmailForRoom = message.sender.type === 'farmer' ? message.sender.email : message.receiverEmail;
+      const messageRoom = `${String(userEmailForRoom).toLowerCase()}_${String(farmerEmailForRoom).toLowerCase()}`;
+
+      // Update chat list preview and ordering
+      setChats(prevChats => {
+        let found = false;
+        const updatedChats = prevChats.map(chat => {
+          if (chat.userEmail.toLowerCase() === userEmailForRoom.toLowerCase() &&
+              chat.farmerEmail.toLowerCase() === farmerEmailForRoom.toLowerCase()) {
+            found = true;
+            return {
+              ...chat,
+              lastMessage: message,
+              lastMessageAt: message.createdAt || new Date(),
+            };
+          }
+          return chat;
         });
-      } else {
-        console.log('Message does not match selected chat room, ignoring');
+
+        if (!found) {
+          updatedChats.push({
+            userEmail: userEmailForRoom,
+            farmerEmail: farmerEmailForRoom,
+            userName: userEmailForRoom,
+            lastMessage: message,
+            lastMessageAt: message.createdAt || new Date(),
+          });
+        }
+
+        return updatedChats.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
+      });
+
+      if (!selectedChat) return;
+      const selectedRoom = `${selectedChat.userEmail.toLowerCase()}_${selectedChat.farmerEmail.toLowerCase()}`;
+      if (selectedRoom === messageRoom) {
+        setMessages(prevMessages => [...prevMessages, message]);
       }
     });
 
@@ -161,7 +173,12 @@ const FarmerChat = () => {
   }, [selectedChat]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }, [messages]);
 
   const sendMessage = () => {
@@ -169,16 +186,6 @@ const FarmerChat = () => {
       console.log('Cannot send message: Empty message or no chat selected');
       return;
     }
-
-    const newMessage = {
-      sender: {
-        type: 'farmer', // Set sender type to 'farmer'
-        email: currentUser_Email,
-      },
-      content: message,
-      createdAt: new Date(),
-      isRead: false,
-    };
 
     // Emit the message to the server
     socket.emit('sendMessage', {
@@ -191,10 +198,6 @@ const FarmerChat = () => {
       if (response && response.error) {
         console.error('Error sending message:', response.error);
         setError(`Failed to send message: ${response.details}`);
-      } else {
-        console.log('Message sent successfully:', response);
-        // Update local messages state
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
       }
     });
 
@@ -308,7 +311,7 @@ const FarmerChat = () => {
               </div>
             </div>
 
-            <div className="messages-container">
+            <div className="messages-container" ref={messagesContainerRef}>
               {messages.length === 0 ? (
                 <div className="no-messages">No messages yet. Start the conversation!</div>
               ) : (
@@ -317,14 +320,13 @@ const FarmerChat = () => {
                     {(index === 0 || new Date(message.createdAt).toDateString() !== new Date(messages[index - 1].createdAt).toDateString()) && (
                       <div className="date-separator">{formatDate(message.createdAt)}</div>
                     )}
-                    <div className={`message ${message.sender.email === currentUser_Email ? 'admin-message' : 'customer-message'}`}>
+                    <div className={`message ${message.sender.email === currentUser_Email ? 'sent-message' : 'received-message'}`}>
                       <div className="message-content">{message.content}</div>
-                      <div className="message-time">{formatTime(message.createdAt)}</div>
+                      <div className="message-time">{formatTime(message.createdAt)} {message.isRead ? '✓✓' : '✓'}</div>
                     </div>
                   </div>
                 ))
               )}
-              <div ref={messagesEndRef} />
             </div>
 
             <div className="message-input-container">

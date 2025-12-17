@@ -307,24 +307,32 @@
   text-align: right;
 }
 
-.admin-message {
+.sent-message {
   align-self: flex-end;
-  background-color: #9adcbf;
-  color: #ffffff;
+  background-color: #d4f8e8;
+  color: #111827;
   border-radius: 12px 12px 0 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #b0e0c8;
 }
 
-.admin-message .message-time {
-  color: #e6f4f1;
+.sent-message .message-time {
+  color: #6b7280;
+  text-align: right;
 }
 
-.customer-message {
+.received-message {
   align-self: flex-start;
   background-color: #ffffff;
   color: #111827;
   border-radius: 12px 12px 12px 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.received-message .message-time {
+  color: #999;
+  text-align: left;
 }
 
 .message-input-container {

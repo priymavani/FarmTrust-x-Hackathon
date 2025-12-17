@@ -50,7 +50,7 @@ cloudinary.config({
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://farmtrust.netlify.app'],
+  origin: ['http://localhost:5173', 'https://farmtrust.netlify.app', 'https://farm-trust-x-hackathon.vercel.app'],
   methods: ['GET', 'POST', 'PATCH'],
   credentials: true,
 }));

@@ -10,7 +10,7 @@ const AuthHandler = () => {
             const saveUserToDB = async () => {
                 try {
                     // Check if user already exists in DB
-                    const checkUser = await axios.get(`http://localhost:5000/users/${user.email}`);
+                    const checkUser = await axios.get(`https://farmtrust-x-hackathon.onrender.com/users/${user.email}`);
 
                     if (checkUser.data && Object.keys(checkUser.data).length > 0) {
                         return;
@@ -19,7 +19,7 @@ const AuthHandler = () => {
                     if (error.response && error.response.status === 404) {
                         // User does not exist, proceed with save
                         try {
-                            const response = await axios.post('http://localhost:5000/users', {
+                            const response = await axios.post('https://farmtrust-x-hackathon.onrender.com/users', {
                                 name: user.username || `${user.given_name || ''} ${user.family_name || ''}`.trim(),
                                 email: user.email,
                                 phone: '',

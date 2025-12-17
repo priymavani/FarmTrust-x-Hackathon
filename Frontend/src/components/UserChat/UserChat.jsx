@@ -7,7 +7,7 @@ import userImage from '../../assets/rajesh.jpg';
 import './UserChat.css'; // Ensure the CSS file name is correct
 
 // Initialize Socket.IO connection
-const socket = io('http://localhost:5000', {
+const socket = io('https://farmtrust-x-hackathon.onrender.com', {
   transports: ['websocket', 'polling'],
   reconnection: true,
   reconnectionAttempts: 5,
@@ -22,7 +22,7 @@ const UserChat = () => {
   const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const navigate = useNavigate();
 
   const currentUser_Email = sessionStorage.getItem('email'); // Fixed variable name
@@ -52,11 +52,46 @@ const UserChat = () => {
       console.log('Socket.IO disconnected:', reason);
     });
 
-    // Handle incoming messages
+    // Handle incoming messages and update chats + active thread
     socket.on('receiveMessage', (message) => {
-      if (selectedChat && 
-          (message.sender.email === selectedChat.userEmail || message.sender.email === selectedChat.farmerEmail)) {
-        setMessages((prevMessages) => [...prevMessages, message]);
+      const userEmailForRoom = message.sender.type === 'customer' ? message.sender.email : message.receiverEmail;
+      const farmerEmailForRoom = message.sender.type === 'farmer' ? message.sender.email : message.receiverEmail;
+      const messageRoom = `${String(userEmailForRoom).toLowerCase()}_${String(farmerEmailForRoom).toLowerCase()}`;
+
+      setChats(prevChats => {
+        let found = false;
+        const updated = prevChats.map(chat => {
+          if (chat.userEmail.toLowerCase() === userEmailForRoom.toLowerCase() &&
+              chat.farmerEmail.toLowerCase() === farmerEmailForRoom.toLowerCase()) {
+            found = true;
+            return {
+              ...chat,
+              lastMessage: message,
+              lastMessageAt: message.createdAt || new Date(),
+            };
+          }
+          return chat;
+        });
+
+        if (!found) {
+          updated.push({
+            userEmail: userEmailForRoom,
+            farmerEmail: farmerEmailForRoom,
+            farmerName: farmerEmailForRoom,
+            userName: userEmailForRoom,
+            lastMessage: message,
+            lastMessageAt: message.createdAt || new Date(),
+            createdAt: new Date(),
+          });
+        }
+
+        return updated.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
+      });
+
+      if (!selectedChat) return;
+      const selectedRoom = `${selectedChat.userEmail.toLowerCase()}_${selectedChat.farmerEmail.toLowerCase()}`;
+      if (selectedRoom === messageRoom) {
+        setMessages(prevMessages => [...prevMessages, message]);
       }
     });
 
@@ -73,20 +108,40 @@ const UserChat = () => {
     try {
       const endpoint =
         userType === 'customer'
-          ? `http://localhost:5000/chat/conversations/customer/${currentUser_Email}`
-          : `http://localhost:5000/chat/conversations/farmer/${currentUser_Email}`;
+          ? `https://farmtrust-x-hackathon.onrender.com/chat/conversations/customer/${currentUser_Email}`
+          : `https://farmtrust-x-hackathon.onrender.com/chat/conversations/farmer/${currentUser_Email}`;
       const response = await fetch(endpoint);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       console.log('Fetched chats:', data); // Debug log to inspect data
-      setChats(data);
+
+      const normalizedChats = data.map(chat => ({
+        userEmail: chat.userEmail || chat.participants?.userEmail || '',
+        farmerEmail: chat.farmerEmail || chat.participants?.farmerEmail || '',
+        farmerName: chat.farmerName || chat.participants?.farmerName || chat.farmerEmail || '',
+        userName: chat.userName || chat.participants?.userName || chat.userEmail || '',
+        lastMessage: chat.lastMessage || (chat.messages?.length ? chat.messages[chat.messages.length - 1] : null),
+        lastMessageAt: chat.lastMessageAt || chat.updatedAt || chat.createdAt || new Date(),
+        createdAt: chat.createdAt || new Date(),
+      }));
+
+      setChats(normalizedChats);
+
+      // Join all chat rooms for this user so realtime works after refresh
+      normalizedChats.forEach(chat => {
+        if (!chat.userEmail || !chat.farmerEmail) return;
+        socket.emit('joinChat', {
+          userEmail: String(chat.userEmail).toLowerCase(),
+          farmerEmail: String(chat.farmerEmail).toLowerCase(),
+        });
+      });
 
       // Handle farmerEmail from query
       if (farmerEmailFromQuery) {
-        const chatWithFarmer = data.find(
+        const chatWithFarmer = normalizedChats.find(
           (chat) =>
-            chat.participants?.farmerEmail &&
-            chat.participants.farmerEmail.toLowerCase() === farmerEmailFromQuery.toLowerCase()
+            chat.farmerEmail &&
+            chat.farmerEmail.toLowerCase() === farmerEmailFromQuery.toLowerCase()
         );
         if (chatWithFarmer) {
           selectChat(chatWithFarmer);
@@ -111,7 +166,7 @@ const UserChat = () => {
   // Create a new chat
   const createNewChat = async (newChat) => {
     try {
-      const response = await fetch('http://localhost:5000/chat', {
+      const response = await fetch('https://farmtrust-x-hackathon.onrender.com/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,8 +177,23 @@ const UserChat = () => {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const createdChat = await response.json();
       console.log('New chat created:', createdChat);
-      setChats((prevChats) => [...prevChats, createdChat]);
-      selectChat(createdChat); // Automatically select the new chat
+      const normalizedChat = {
+        userEmail: createdChat.participants?.userEmail || '',
+        farmerEmail: createdChat.participants?.farmerEmail || '',
+        farmerName: createdChat.farmerName || createdChat.participants?.farmerName || createdChat.participants?.farmerEmail || '',
+        userName: createdChat.userName || createdChat.participants?.userName || createdChat.participants?.userEmail || '',
+        lastMessage: null,
+        lastMessageAt: createdChat.lastMessageAt || createdChat.updatedAt || createdChat.createdAt || new Date(),
+        createdAt: createdChat.createdAt || new Date(),
+      };
+
+      socket.emit('joinChat', {
+        userEmail: String(normalizedChat.userEmail).toLowerCase(),
+        farmerEmail: String(normalizedChat.farmerEmail).toLowerCase(),
+      });
+
+      setChats((prevChats) => [...prevChats, normalizedChat]);
+      selectChat(normalizedChat); // Automatically select the new chat
     } catch (error) {
       console.error('Error creating new chat:', error);
       setError('Failed to start a new chat. Please try again later.');
@@ -136,9 +206,9 @@ const UserChat = () => {
   }, [currentUser_Email, userType, farmerEmailFromQuery]);
 
   // Fetch messages for selected chat
-  const fetchMessages = async (chat) => {
+  const fetchMessages = async (userEmail, farmerEmail) => {
     try {
-      const response = await fetch(`http://localhost:5000/chat/history?userEmail=${chat.participants?.userEmail}&farmerEmail=${chat.participants?.farmerEmail}`);
+      const response = await fetch(`https://farmtrust-x-hackathon.onrender.com/chat/history?userEmail=${userEmail}&farmerEmail=${farmerEmail}`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setMessages(data);
@@ -150,13 +220,13 @@ const UserChat = () => {
 
   // Select a chat
   const selectChat = (chat) => {
-    const userEmail = chat.participants?.userEmail?.toLowerCase() || '';
-    const farmerEmail = chat.participants?.farmerEmail?.toLowerCase() || '';
+    const userEmail = chat.userEmail || '';
+    const farmerEmail = chat.farmerEmail || '';
 
     setSelectedChat({
       userEmail,
       farmerEmail,
-      name: userType === 'customer' ? chat.farmerName : chat.userName,
+      name: userType === 'customer' ? chat.farmerName || farmerEmail : chat.userName || userEmail,
     });
     setError(null);
     
@@ -164,22 +234,22 @@ const UserChat = () => {
     navigate(`/user/messages?farmerEmail=${farmerEmail}`, { replace: true });
 
     // Fetch messages for the selected chat
-    fetchMessages(chat);
+    fetchMessages(userEmail, farmerEmail);
   };
+
+  // Always keep the view pinned to the latest message
+  useEffect(() => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages]);
 
   // Send a message
   const sendMessage = () => {
     if (message.trim() === '' || !selectedChat) return;
-
-    const newMessage = {
-      sender: {
-        type: userType === 'customer' ? 'customer' : 'farmer',
-        email: currentUser_Email,
-      },
-      content: message,
-      createdAt: new Date(),
-      isRead: false,
-    };
 
     // Emit the message to the server
     socket.emit('sendMessage', {
@@ -190,8 +260,6 @@ const UserChat = () => {
       content: message,
     });
 
-    // Update local messages state
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessage('');
   };
 
@@ -233,15 +301,18 @@ const UserChat = () => {
             <div className="no-chats">No chats yet. Start a conversation!</div>
           ) : (
             chats.map((chat) => {
-              const userEmail = chat.participants?.userEmail;
-              const farmerEmail = chat.participants?.farmerEmail;
+              const userEmail = chat.userEmail || '';
+              const farmerEmail = chat.farmerEmail || '';
+              const normalizedUserEmail = userEmail.toLowerCase();
+              const normalizedFarmerEmail = farmerEmail.toLowerCase();
 
               return (
                 <div
-                  key={`${userEmail}-${farmerEmail}`} // Use a combination of emails as the key
+                  key={`${normalizedUserEmail}-${normalizedFarmerEmail}`} // Use a combination of emails as the key
                   className={`conversation-item ${
-                    selectedChat?.userEmail === userEmail &&
-                    selectedChat?.farmerEmail === farmerEmail
+                    selectedChat &&
+                    selectedChat.userEmail.toLowerCase() === normalizedUserEmail &&
+                    selectedChat.farmerEmail.toLowerCase() === normalizedFarmerEmail
                       ? 'selected'
                       : ''
                   }`}
@@ -252,11 +323,11 @@ const UserChat = () => {
                   </div>
                   <div className="conversation-details">
                     <div className="conversation-header">
-                      <span className="user-name">{userType === 'customer' ? chat.farmerEmail : chat.userEmail}</span>
+                      <span className="user-name">{userType === 'customer' ? (chat.farmerName || chat.farmerEmail) : (chat.userName || chat.userName )}</span>
                       <span className="message-time">{formatTime(chat.lastMessageAt)}</span>
                     </div>
                     <div className="message-preview">
-                      {chat.messages?.length > 0 ? chat.messages[chat.messages.length - 1].content : 'No messages yet'}
+                      {chat.lastMessage?.content || 'No messages yet'}
                     </div>
                     <div className="message-date">{formatDate(chat.lastMessageAt)}</div>
                   </div>
@@ -286,13 +357,13 @@ const UserChat = () => {
                 {formatDate(
                   chats.find(
                     (chat) =>
-                      chat.participants?.userEmail === selectedChat.userEmail &&
-                      chat.participants?.farmerEmail === selectedChat.farmerEmail
+                      chat.userEmail?.toLowerCase() === selectedChat.userEmail.toLowerCase() &&
+                      chat.farmerEmail?.toLowerCase() === selectedChat.farmerEmail.toLowerCase()
                   )?.createdAt || new Date()
                 )}
               </div>
             </div>
-            <div className="messages-container">
+            <div className="messages-container" ref={messagesContainerRef}>
               {messages.length === 0 ? (
                 <div className="no-messages">No messages yet. Start the conversation!</div>
               ) : (
@@ -316,7 +387,6 @@ const UserChat = () => {
                   </div>
                 ))
               )}
-              <div ref={messagesEndRef} />
             </div>
             <div className="message-input-container">
               <BsPaperclip className="attachment-icon" />
